@@ -1,0 +1,44 @@
+{
+  "platform": "Trello Platform",
+  "actions": {
+    "submit": "Submit",
+    "continue": "Continue",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "back": "Back",
+    "add": "Add",
+    "apply": "Apply",
+    "next": "Next"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "loading": "Loading..."
+  },
+  "table": {
+    "noData": "No data available",
+    "actions": "Actions"
+  },
+  "message": {
+    "fatal_error": "Fatal Server Error"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "admin": "Admin",
+    "music": {
+      "main": "Music",
+      "audio": "Audio",
+      "genre": "Genre",
+      "album": "Album"
+    },
+    "artist": "Artist",
+    "listener": "Listener"
+  },
+  "gender": {
+    "male": "Male",
+    "female": "Female"
+  }
+}
