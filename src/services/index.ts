@@ -21,6 +21,10 @@ export const AUTH_ENDPOINT = {
   CONFIRM_SIGN_UP: '/auth/confirm-sign-up',
 };
 
+export const USER_ENDPOINT = {
+  ME: '/users/me'
+}
+
 export const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL + PREFIX_ENDPOINT,
   credentials: 'include',
