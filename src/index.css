@@ -23,6 +23,7 @@
   font-weight: 200;
   font-style: normal;
 }
+
 @font-face {
   font-family: "Gotham";
   src: url("/fonts/Gotham-XLightItalic.otf") format("opentype");
@@ -38,6 +39,7 @@
   font-weight: 300;
   font-style: normal;
 }
+
 @font-face {
   font-family: "Gotham";
   src: url("/fonts/GothamLightItalic.ttf") format("truetype");
@@ -51,7 +53,12 @@
   src: url("/fonts/GothamBook.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
+  size-adjust: 100%;           /* thử điều chỉnh 95%–105% */
+  ascent-override: 90%;        /* kéo ascender xuống */
+  descent-override: 20%;
+  line-gap-override: 0%;
 }
+
 @font-face {
   font-family: "Gotham";
   src: url("/fonts/GothamBookItalic.ttf") format("truetype");
@@ -67,6 +74,7 @@
   font-weight: 500;
   font-style: normal;
 }
+
 @font-face {
   font-family: "Gotham";
   src: url("/fonts/GothamMediumItalic.ttf") format("truetype");
@@ -82,6 +90,7 @@
   font-weight: 700;
   font-style: normal;
 }
+
 @font-face {
   font-family: "Gotham";
   src: url("/fonts/GothamBoldItalic.ttf") format("truetype");
@@ -128,6 +137,7 @@
   --color-bg-secondary: #121212;
   --color-bg-tertiary: #282828;
   --color-bg-card: #242424;
+  --color-bg-surface: #161616;
 
   /* TEXT */
   --color-text-primary: #ffffff;
@@ -147,9 +157,39 @@
   --color-player-bg: #181818;
 }
 
+html, body {
+  overflow: hidden;
+  height: 100%;
+}
+
+#root {
+  overflow: auto;
+  height: 100%;
+}
 
 :root {
+  line-height: 1.5;
   font-family: "Gotham", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-synthesis: none;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: white;
+  background: rgba(0, 0, 0, 0.4);
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+* {
+  outline: none;
 }

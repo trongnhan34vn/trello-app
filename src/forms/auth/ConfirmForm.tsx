@@ -108,7 +108,7 @@ const ConfirmForm = () => {
     const payload = {
       username: confirmationEmail,
     };
-    handle(resend(payload), {
+    handle(() => resend(payload), {
       hasLoading: false,
       onSuccess: handleSuccessResendCode,
       onError: handleErrorResendCode,
@@ -126,7 +126,7 @@ const ConfirmForm = () => {
   };
 
   const handleConfirmEmail = (data: any) => {
-    handle(confirmEmail(data), {
+    handle(() => confirmEmail(data), {
       onError: handleErrorConfirm,
       onSuccess: handleSuccessConfirm,
     });

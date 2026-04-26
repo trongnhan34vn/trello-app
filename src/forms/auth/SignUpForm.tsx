@@ -98,7 +98,7 @@ const SignUpForm = () => {
 
   const handleSubmit = (data: SignUpRequest) => {
     localStorage.setItem(LOCAL_STORAGE_FIELDS.CONFIRM_EMAIL, data.email);
-    handle(signUp(data), {
+    handle(() => signUp(data), {
       onSuccess: handleSuccessSignUp,
       onError: handleErrorSignUp,
     });
@@ -107,7 +107,7 @@ const SignUpForm = () => {
   return (
     <div className="w-2/3 mx-auto">
       <Form defaultValues={defaultValues} onSubmit={handleSubmit}>
-        {({ watch }) => {
+        {({ watch }: any) => {
           const password = watch('password');
           return (
             <>

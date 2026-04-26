@@ -39,10 +39,10 @@ const Button = ({
 
   const variants = {
     contained: {
-      primary: "border bg-primary text-black hover:opacity-90",
-      secondary: "border bg-blue-500 text-black hover:opacity-90",
+      primary: "border border-primary bg-primary text-black hover:opacity-85",
+      secondary: "border bg-blue-500 text-black hover:opacity-85",
       disabled: "border bg-gray-600 text-white",
-      danger: "border border-transparent bg-red-500 text-black hover:opacity-90",
+      danger: "border border-transparent bg-red-500 text-black hover:opacity-85",
     },
     outlined: {
       primary: "border border-primary text-primary hover:text-black hover:bg-primary",

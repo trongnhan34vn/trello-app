@@ -2,14 +2,18 @@ import { useLoading } from './useLoading';
 
 export const useMutationHandler = () => {
   const { show, hide } = useLoading();
-  const handle = async (promise: any, { onSuccess, onError, hasLoading = true }) => {
+  const handle = async (promise: () => any, { onSuccess, onError, hasLoading = true }: any) => {
     try {
       if (hasLoading) {
         show();
       }
-      const res = await promise.unwrap();
+      
+      const res = await promise().unwrap();
       onSuccess && onSuccess(res);
-    } catch (error) {
+    } catch (error: any) {
+      if (error.status == 401) {
+        window.location.href = '/';
+      }
       onError && onError(error.data);
       return null;
     } finally {
