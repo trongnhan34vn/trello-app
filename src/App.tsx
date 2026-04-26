@@ -7,7 +7,6 @@ function App() {
   const layouts = [...new Set(routes.map((r) => r.layout))];
 
   return (
-    <>
       <Routes>
         {layouts.map((l, index) => {
           const Layout = l;
@@ -30,7 +29,6 @@ function App() {
           );
         })}
       </Routes>
-    </>
   );
 }
 

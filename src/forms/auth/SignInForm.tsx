@@ -11,6 +11,7 @@ import { ROUTES } from '../../routes';
 import { useSignInMutation } from '../../services/auth.service';
 import type { ErrorResponse, SuccessResponse } from '../../types/api.type';
 import type { SignInReqest } from '../../types/user.type';
+import { useMeQuery } from '../../services/user.service';
 
 const SignInForm = () => {
   const { t } = useTranslation();
@@ -56,9 +57,10 @@ const SignInForm = () => {
   const [signIn] = useSignInMutation();
   const { handle } = useMutationHandler();
 
-  const handleSignInSuccess = (data: SuccessResponse<any>) => {
+  const handleSignInSuccess = async (data: SuccessResponse<any>) => {
     localStorage.removeItem(LOCAL_STORAGE_FIELDS.CONFIRM_EMAIL);
     toast.success(data.message);
+    await new Promise(resolve => setTimeout(resolve, 0));
     navigate(ROUTES.DASHBOARD)
   };
 
@@ -71,7 +73,7 @@ const SignInForm = () => {
 
   const handleSubmit = (data: SignInReqest) => {
     localStorage.setItem(LOCAL_STORAGE_FIELDS.CONFIRM_EMAIL, data.email);
-    handle(signIn(data), {
+    handle(() => signIn(data), {
       onSuccess: handleSignInSuccess,
       onError: handleSignInError,
     });

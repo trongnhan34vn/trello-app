@@ -1,5 +1,6 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery, type BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import { BASE_URL } from '../constants';
+import axios from 'axios';
 
 export enum HttpMethod {
   POST = 'POST',
@@ -21,18 +22,67 @@ export const AUTH_ENDPOINT = {
   CONFIRM_SIGN_UP: '/auth/confirm-sign-up',
 };
 
+export const USER_ENDPOINT = {
+  ME: '/users/me'
+}
+
+export const WORKSPACE_CATEGORY_ENDPOINT = {
+  LIST: '/workspace-categories'
+}
+
+export const IMAGE_ENDPOINT = {
+  LIST: '/images'
+}
+
+export const ROLE_ENDPOINT = {
+  LIST: '/roles'
+}
+
+export const WORKSPACE_ENDPOINT = {
+  CREATE: '/workspaces',
+  LIST: '/workspaces',
+  DETAIL: '/workspaces/:id'
+}
+
+export const BOARD_ENDPOINT = {
+  CREATE: '/boards',
+  DETAIL: '/boards/:id'
+}
+
+export const LIST_ENDPOINT = {
+  LIST: '/lists',
+  CREATE: '/lists'
+}
+
+export const CARD_ENDPOINT = {
+  LIST: '/cards',
+  CREATE: '/cards',
+  UPDATE: '/cards/:id'
+}
+
 export const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL + PREFIX_ENDPOINT,
   credentials: 'include',
 });
 
+const baseQueryWithReauth: BaseQueryFn = async (args, api, extraOptions) => {
+  const result = await baseQuery(args, api, extraOptions);
+
+  if (result.error?.status === 401) {
+    window.location.href = '/';
+  }
+
+  return result;
+};
+
 export const baseApi = createApi({
   reducerPath: 'api',
-  baseQuery,
+  baseQuery: baseQueryWithReauth,
+  tagTypes: ['Workspace', 'User', 'Auth', 'Board', 'List', 'Card'],
   endpoints: () => ({}), // empty base
 });
 
-const buildEndpoint = (path: string, params: Record<string, string | number>) => {
+const buildEndpoint = (path: string, params: Record<string, string | number> | undefined) => {
   let url = path;
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
@@ -66,3 +116,10 @@ export const buildUrl = ({
 }) => {
   return buildEndpoint(path, params) + buildQuery(query);
 };
+
+export const http = () => {
+  return axios.create({
+    baseURL: BASE_URL + PREFIX_ENDPOINT,
+    withCredentials: true
+  })
+}

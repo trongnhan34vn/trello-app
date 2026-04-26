@@ -9,3 +9,15 @@ export const LOCAL_STORAGE_FIELDS = {
   CONFIRM_EMAIL: 'confirm_email',
   RESEND_STATE: 'resend_state'
 }
+
+export const BoardConst = {
+  DEFAULT_ID: "DEFAULT"
+}
+
+export const CardConst = {
+  DEFAULT_ID: "DEFAULT"
+}
+
+export const ListConst = {
+  DEFAULT_ID: "DEFAULT"
+}

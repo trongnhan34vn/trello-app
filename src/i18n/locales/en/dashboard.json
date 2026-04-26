@@ -1,0 +1,56 @@
+{
+  "header": {
+    "create_board_btn": "Create Board"
+  },
+  "sidebar": {
+    "title": "Workspaces",
+    "board": "Board",
+    "member": "Member",
+    "create_workspace_btn": "Create New Workspace",
+    "no_workspace_data": "You don’t have any workspaces yet. Let’s create one together."
+  },
+  "content": {
+    "title": "List your workspaces",
+    "board": "Board",
+    "member": "Member",
+    "create_board_btn": "Create New Board",
+    "create_workspace_btn": "Create New Workspace",
+    "no_workspace_data": "You don’t have any workspaces yet. Let’s create one together."
+  },
+  "workspace_create_form": {
+    "title": "Let's build a Workspace",
+    "field": {
+      "name": {
+        "label": "Workspace name",
+        "required": "Workspace name is required",
+        "placeholder": "Nhan Tic Workspace..."
+      },
+      "type": {
+        "label": "Workspace type",
+        "placeholder": "Select workspace type...",
+        "required": "Workspace type is requried"
+      },
+      "description": {
+        "label": "Workspace description",
+        "placeholder": "Our team build Jarvis..."
+      }
+    }
+  },
+  "board_create_form": {
+    "title": "Create Board",
+    "field": {
+      "background": {
+        "label": "Background"
+      },
+      "title": {
+        "label": "Board Title",
+        "required": "Board title is requried"
+      },
+      "workspace": {
+        "label": "Workspace",
+        "placeholder": "Select workspace...",
+        "required": "Workspace is required"
+      }
+    }
+  }
+}
