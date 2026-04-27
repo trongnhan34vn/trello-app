@@ -67,8 +67,9 @@ export const baseQuery = fetchBaseQuery({
 
 const baseQueryWithReauth: BaseQueryFn = async (args, api, extraOptions) => {
   const result = await baseQuery(args, api, extraOptions);
+  const isConfirmEmailPage = window.location.pathname.includes('/confirm') || window.location.pathname.includes('/');
 
-  if (result.error?.status === 401) {
+  if (result.error?.status == 401 && !isConfirmEmailPage) {
     window.location.href = '/';
   }
 

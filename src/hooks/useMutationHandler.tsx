@@ -7,11 +7,13 @@ export const useMutationHandler = () => {
       if (hasLoading) {
         show();
       }
-      
+
       const res = await promise().unwrap();
       onSuccess && onSuccess(res);
     } catch (error: any) {
-      if (error.status == 401) {
+      const isConfirmEmailPage = window.location.pathname.includes('/confirm') || window.location.pathname.includes('/');
+
+      if (error.status == 401 && !isConfirmEmailPage) {
         window.location.href = '/';
       }
       onError && onError(error.data);

@@ -11,7 +11,6 @@ import { ROUTES } from '../../routes';
 import { useSignInMutation } from '../../services/auth.service';
 import type { ErrorResponse, SuccessResponse } from '../../types/api.type';
 import type { SignInReqest } from '../../types/user.type';
-import { useMeQuery } from '../../services/user.service';
 
 const SignInForm = () => {
   const { t } = useTranslation();

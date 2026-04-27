@@ -13,7 +13,6 @@ interface IProps {
   index: number;
   children: ReactNode;
   title: string;
-  itemDropZoneId?: string;
   boardId: string;
   listCreateDefaultValues: ListCreateForm;
   onCreateListSubmit: (data: ListCreateForm) => void;
@@ -26,7 +25,6 @@ const Column = ({
   index,
   children,
   title,
-  itemDropZoneId,
   boardId,
   listCreateDefaultValues,
   onCreateListSubmit,
@@ -49,21 +47,20 @@ const Column = ({
     accept: ['column'],
   });
 
-  const setRef = (el: any) => {
-    dropRef(el);
-    sortRef(el);
-  };
 
   const { ref: itemDropZoneRef } = useDroppable({
-    id: itemDropZoneId ?? `dropzone_${String(id)}`,
+    id: `dropzone_${String(id)}`,
     type: 'item-dropzone',
     accept: ['item'],
     collisionPriority: CollisionPriority.High,
   });
 
-  // state form
-  // const [isOnCreateList, setOnCreateList] = useState(false);
+  const setRef = (el: any) => {
+    dropRef(el);
+    sortRef(el);
+  };
 
+  // state form
   const baseColumnClass = 'bg-bg-surface flex shrink-0 flex-col gap-2 rounded-lg p-3';
   const baseDefaultColumnClass =
     'bg-bg-surface flex h-fit min-h-12 w-[280px] shrink-0 items-center gap-2 rounded-lg p-3 transition-all duration-150 ease-in';
