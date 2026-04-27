@@ -46,17 +46,18 @@ const Modal = ({ open, onClose, children, size = ModalSize.MD, hasXMark }: IProp
       onClose={onClose}
     >
       {/* overlay */}
-      <div className="fixed inset-0 bg-black/25" />
+      <div className="fixed inset-0 bg-black/20 backdrop-blur-xs" />
 
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
         <div className="flex min-h-full items-center justify-center p-4">
           <DialogPanel
             transition
             className={clsx(
-              'w-full relative rounded-xl p-4 bg-black/40 backdrop-blur-xl duration-300 shadow-xl drop-shadow-lg ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0',
+              'w-full relative rounded-xl p-6 bg-bg-secondary/80 backdrop-blur-xl duration-300 shadow-xl border border-white/10 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0',
               sizeMap[size],
             )}
           >
+
             {hasXMark && (
               <div
                 onClick={onClose}

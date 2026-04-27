@@ -79,12 +79,12 @@ PopoverBox.Panel = function Panel({
     lg: 'w-96',
     xl: 'w-[28rem]',
     '2xl': 'w-[32rem]',
-  
+
     full: 'w-full',
     auto: 'w-auto',
     fit: 'w-fit',
     content: 'w-fit',
-  
+
     'screen-sm': 'max-w-sm w-full',
     'screen-md': 'max-w-md w-full',
     'screen-lg': 'max-w-lg w-full',
@@ -94,8 +94,8 @@ PopoverBox.Panel = function Panel({
       anchor={anchor as any}
       className={clsx(
         'absolute z-10 mt-2 rounded-xl',
-        'bg-black/40 backdrop-blur-xl border border-white/10',
-        'text-sm text-white shadow-lg drop-shadow-2xl',
+        'bg-bg-secondary/80 backdrop-blur-xl border border-white/10',
+        'text-sm text-white shadow-lg drop-shadow-xl',
         'p-3 space-y-3',
         'transition duration-150 ease-out',
         'data-closed:opacity-0 data-closed:scale-95',
