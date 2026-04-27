@@ -9,3 +9,5 @@ export type List = {
 }
 
 export type ListCreateForm = Pick<List, 'name' | 'boardId' | 'position'>
+
+export type DragUpdateList = Pick<List, 'id' | 'position'>;

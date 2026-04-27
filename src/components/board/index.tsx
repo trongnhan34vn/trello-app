@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { generateKeyBetween } from 'fractional-indexing';
 import { CardConst, ListConst } from '../../constants';
 import type { Card, CardCreateForm, DragUpdateCard } from '../../types/card.type';
-import type { List, ListCreateForm } from '../../types/list.type';
+import type { DragUpdateList, List, ListCreateForm } from '../../types/list.type';
 import Column from './Column';
 import { Item } from './Item';
 
@@ -14,6 +14,7 @@ interface IProps {
   onCreateList: (payload: ListCreateForm) => Promise<List | null>;
   onCreateCard: (payload: CardCreateForm) => Promise<Card | null>;
   onDragCard: (payload: DragUpdateCard) => void;
+  onDragList: (payload: DragUpdateList) => void;
 }
 
 const KanbanBoard = ({
@@ -23,6 +24,7 @@ const KanbanBoard = ({
   onCreateList,
   onCreateCard,
   onDragCard,
+  onDragList,
 }: IProps) => {
   const defaultList = {
     id: ListConst.DEFAULT_ID,
@@ -41,6 +43,13 @@ const KanbanBoard = ({
   const REAL_CARDS = (cards: Card[]) => cards.filter((c) => !isDefaultCardId(c.id));
   const getRenderColumnOrder = (order: string[]) => [...order, ListConst.DEFAULT_ID];
 
+  // Sort helper — fractional-index keys sort correctly as plain strings
+  const byPosition = (a: Card | List, b: Card | List) => {
+    const pa = a.position ?? '';
+    const pb = b.position ?? '';
+    return pa < pb ? -1 : pa > pb ? 1 : 0;
+  };
+
   const [lists, setLists] = useState<List[]>([]);
   const [cards, setCards] = useState<Card[]>([]);
   const [columnOrder, setColumnOrder] = useState<string[]>([]);
@@ -48,19 +57,14 @@ const KanbanBoard = ({
   const cardsRef = useRef<Card[]>([]);
 
   useEffect(() => {
-    const hydratedLists = REAL_LISTS(propLists).map((list) => ({
-      ...list,
-    }));
+    const hydratedLists = REAL_LISTS(propLists)
+      .map((list) => ({
+        ...list,
+      }))
+      .sort(byPosition);
     setLists(hydratedLists);
     setColumnOrder(hydratedLists.map((l) => l.id));
   }, [propLists]);
-
-  // Sort helper — fractional-index keys sort correctly as plain strings
-  const byPosition = (a: Card, b: Card) => {
-    const pa = a.position ?? '';
-    const pb = b.position ?? '';
-    return pa < pb ? -1 : pa > pb ? 1 : 0;
-  };
 
   useEffect(() => {
     const nextCards = REAL_CARDS(propCards).sort(byPosition);
@@ -85,7 +89,7 @@ const KanbanBoard = ({
 
   const handleCreateListSubmit = async (data: ListCreateForm) => {
     const refList = REAL_LISTS(lists);
-    const lastPosition = (refList?.[refList?.length - 1]?.position) ?? null;
+    const lastPosition = refList?.[refList?.length - 1]?.position ?? null;
 
     const newList = await onCreateList({ ...data, position: lastPosition });
     if (!newList) return;
@@ -123,7 +127,7 @@ const KanbanBoard = ({
 
   const handleSubmitCreateCard = async (data: CardCreateForm) => {
     const refCards = cards.filter((c) => c.listId === data.listId);
-    const lastPosition = (refCards?.[refCards?.length - 1]?.position) ?? null;
+    const lastPosition = refCards?.[refCards?.length - 1]?.position ?? null;
 
     const newCard = await onCreateCard({
       ...data,
@@ -192,6 +196,28 @@ const KanbanBoard = ({
   const handleDragOver = (event: any) => {
     const { source, target } = event.operation ?? {};
     if (!source || !target) return;
+
+    // ── Handle Column Drag Over ──────────────────────────────────────────────
+    if (source.type === 'column') {
+      const draggedId = source.id as string;
+      if (draggedId === ListConst.DEFAULT_ID) return;
+
+      const targetId = target.id as string;
+      if (targetId === ListConst.DEFAULT_ID || draggedId === targetId) return;
+
+      const oldIndex = columnOrder.indexOf(draggedId);
+      const newIndex = columnOrder.indexOf(targetId);
+
+      if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
+        const newOrder = [...columnOrder];
+        newOrder.splice(oldIndex, 1);
+        newOrder.splice(newIndex, 0, draggedId);
+        setColumnOrder(newOrder);
+      }
+      return;
+    }
+
+    // ── Handle Item Drag Over ────────────────────────────────────────────────
     if (source.type !== 'item') return;
 
     const draggedId = source.id as string;
@@ -238,75 +264,114 @@ const KanbanBoard = ({
   const handleDragEnd = (event: any) => {
     const { source, target } = event.operation ?? {};
     if (!source || !target) return;
+    // handle column drag
+    if (source.type === 'column') {
+      const draggedId = source.id as string;
+      if (draggedId === ListConst.DEFAULT_ID) return;
 
-    if (source.type === 'column') return;
-    if (source.type !== 'item') return;
+      // Current column order from state (optimistically updated in dragOver)
+      const currentOrder = columnOrder;
+      const movedIdx = currentOrder.indexOf(draggedId);
+      if (movedIdx === -1) return;
 
-    const draggedId = source.id as string;
-    if (isDefaultCardId(draggedId)) return;
+      // Get real lists (server truth) sorted by position to find neighbours
+      const serverLists = REAL_LISTS(propLists).sort(byPosition);
+      const listMap = new Map(serverLists.map((l) => [l.id, l]));
 
-    const serverCards = REAL_CARDS(propCards);
-    const optimisticCards = cardsRef.current;
+      // Get positions of neighbours in the new order
+      const beforeId = currentOrder[movedIdx - 1];
+      const afterId = currentOrder[movedIdx + 1];
 
-    // ── Resolve final position ────────────────────────────────────────────────
-    let targetListId: string;
-    let finalIndex: number | null = null;
+      const beforePos = listMap.get(beforeId)?.position ?? null;
+      const afterPos = listMap.get(afterId)?.position ?? null;
 
-    const resolved = resolveTarget(target, serverCards, draggedId);
+      let newPosition: string;
+      try {
+        newPosition = generateKeyBetween(beforePos, afterPos);
+      } catch (err) {
+        newPosition = generateKeyBetween(null, null);
+      }
 
-    if (resolved) {
-      targetListId = resolved.targetListId;
-      finalIndex = resolved.targetIndex;
-    } else {
-      const movedCard = optimisticCards.find((c) => c.id === draggedId);
-      if (!movedCard?.listId) return;
-      targetListId = movedCard.listId;
-      finalIndex = optimisticCards
-        .filter((c) => c.listId === targetListId && !isDefaultCardId(c.id))
-        .findIndex((c) => c.id === draggedId);
+      // ── Debug log (Column) ──────────────────────────────────────────────────
+      console.group('[DragEnd-Column] position debug');
+      console.log('draggedId    :', draggedId);
+      console.log('beforePos    :', beforePos);
+      console.log('afterPos     :', afterPos);
+      console.log('newPosition  :', newPosition);
+      console.log('payload      :', { id: draggedId, position: newPosition });
+      console.groupEnd();
+      // ─────────────────────────────────────────────────────────────────────────
+
+      onDragList({ id: draggedId, position: newPosition });
+      return;
     }
+    // handle item drag
+    if (source.type === 'item') {
+      const draggedId = source.id as string;
+      if (isDefaultCardId(draggedId)) return;
 
-    const dbTargetCards = serverCards
-      .filter((c) => c.listId === targetListId && c.id !== draggedId)
-      .sort(byPosition);
+      const serverCards = REAL_CARDS(propCards);
+      const optimisticCards = cardsRef.current;
 
-    const insertIdx = finalIndex !== null ? Math.max(0, finalIndex) : dbTargetCards.length;
+      // ── Resolve final position ────────────────────────────────────────────────
+      let targetListId: string;
+      let finalIndex: number | null = null;
 
-    const before = dbTargetCards[insertIdx - 1]?.position ?? null;
-    const after = dbTargetCards[insertIdx]?.position ?? null;
+      const resolved = resolveTarget(target, serverCards, draggedId);
 
-    let newPosition: string;
-    let posError: any = null;
-    try {
-      newPosition = generateKeyBetween(before, after);
-    } catch (err) {
-      posError = err;
-      newPosition = generateKeyBetween(null, null);
+      if (resolved) {
+        targetListId = resolved.targetListId;
+        finalIndex = resolved.targetIndex;
+      } else {
+        const movedCard = optimisticCards.find((c) => c.id === draggedId);
+        if (!movedCard?.listId) return;
+        targetListId = movedCard.listId;
+        finalIndex = optimisticCards
+          .filter((c) => c.listId === targetListId && !isDefaultCardId(c.id))
+          .findIndex((c) => c.id === draggedId);
+      }
+
+      const dbTargetCards = serverCards
+        .filter((c) => c.listId === targetListId && c.id !== draggedId)
+        .sort(byPosition);
+
+      const insertIdx = finalIndex !== null ? Math.max(0, finalIndex) : dbTargetCards.length;
+
+      const before = dbTargetCards[insertIdx - 1]?.position ?? null;
+      const after = dbTargetCards[insertIdx]?.position ?? null;
+
+      let newPosition: string;
+      let posError: any = null;
+      try {
+        newPosition = generateKeyBetween(before, after);
+      } catch (err) {
+        posError = err;
+        newPosition = generateKeyBetween(null, null);
+      }
+
+      // ── Debug log (Card) ─────────────────────────────────────────────────────────────
+      console.group('[DragEnd] position debug');
+      console.log('draggedId    :', draggedId);
+      console.log('targetListId :', targetListId);
+      console.log('resolvedVia  :', resolved ? 'eventTarget' : 'optimisticFallback');
+      console.log(
+        'dbTargetCards:',
+        dbTargetCards.map((c, i) => `[${i}] ${c.id} → "${c.position}"`),
+      );
+      console.log('before       :', before);
+      console.log('after        :', after);
+      if (posError) console.warn('generateKeyBetween error (fallback):', posError);
+      console.log('newPosition  :', newPosition);
+      console.log('payload      :', { id: draggedId, listId: targetListId, position: newPosition });
+      console.groupEnd();
+      // ─────────────────────────────────────────────────────────────────────────
+
+      onDragCard({ id: draggedId, listId: targetListId, position: newPosition });
     }
-
-    // ── Debug log ─────────────────────────────────────────────────────────────
-    console.group('[DragEnd] position debug');
-    console.log('draggedId    :', draggedId);
-    console.log('targetListId :', targetListId);
-    console.log('resolvedVia  :', resolved ? 'eventTarget' : 'optimisticFallback');
-    console.log('dbTargetCards:', dbTargetCards.map((c, i) => `[${i}] ${c.id} → "${c.position}"`));
-    console.log('before       :', before);
-    console.log('after        :', after);
-    if (posError) console.warn('generateKeyBetween error (fallback):', posError);
-    console.log('newPosition  :', newPosition);
-    console.log('payload      :', { id: draggedId, listId: targetListId, position: newPosition });
-    console.groupEnd();
-    // ─────────────────────────────────────────────────────────────────────────
-
-    TODO: onDragCard({ id: draggedId, listId: targetListId, position: newPosition });
   };
 
   return (
-    <DragDropProvider
-      onDragStart={() => { }}
-      onDragOver={handleDragOver}
-      onDragEnd={handleDragEnd}
-    >
+    <DragDropProvider onDragStart={() => { }} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
       <div className="inline-flex h-full w-max min-w-0 max-w-none flex-nowrap items-stretch gap-4 p-2">
         {getRenderColumnOrder(columnOrder).map((column, columnIndex) => {
           const list =

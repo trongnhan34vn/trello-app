@@ -17,7 +17,14 @@ export const listService = baseApi.injectEndpoints({
         body,
       }),
     }),
+    updateList: builder.mutation({
+      query: (body) => ({
+        url: buildUrl({ path: LIST_ENDPOINT.UPDATE, params: { id: body.id } }),
+        method: HttpMethod.PATCH,
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useListListQuery, useCreateListMutation } = listService;
+export const { useListListQuery, useCreateListMutation, useUpdateListMutation } = listService;
