@@ -12,12 +12,14 @@ import { clsx } from 'clsx';
 PopoverBox.Button = function Button({
   children,
   className,
+  disabled
 }: {
   children: ReactNode;
   className?: string;
+  disabled?: boolean
 }) {
   return (
-    <Popover.Button as={'div'} className={clsx('whitespace-nowrap', className)}>
+    <Popover.Button as={'div'} disabled={disabled} className={clsx('whitespace-nowrap', className, disabled ? 'cursor-not-allowed' : '')}>
       {children}
     </Popover.Button>
   );
@@ -41,27 +43,64 @@ export enum PopoverAnchor {
   RIGHT_END = 'right-end',
 }
 
+export enum PopoverSize {
+  XS = 'xs',   // cực nhỏ (icon tooltip)
+  SM = 'sm',   // nhỏ (simple dropdown)
+  MD = 'md',   // mặc định
+  LG = 'lg',   // lớn hơn
+  XL = 'xl',   // khá lớn
+  XXL = '2xl', // rất lớn
+
+  FULL = 'full',         // full width
+  AUTO = 'auto',         // theo content
+  FIT = 'fit',           // fit-content
+  CONTENT = 'content',   // alias cho fit-content
+
+  SCREEN_SM = 'screen-sm', // responsive
+  SCREEN_MD = 'screen-md',
+  SCREEN_LG = 'screen-lg',
+}
+
 PopoverBox.Panel = function Panel({
   children,
   className,
   anchor = PopoverAnchor.BOTTOM,
+  size = PopoverSize.MD
 }: {
   children: ReactNode;
   className?: string;
   anchor?: PopoverAnchor;
+  size?: PopoverSize;
 }) {
+  const POPOVER_SIZE_MAP: Record<PopoverSize, string> = {
+    xs: 'w-40',
+    sm: 'w-56',
+    md: 'w-72',
+    lg: 'w-96',
+    xl: 'w-[28rem]',
+    '2xl': 'w-[32rem]',
+  
+    full: 'w-full',
+    auto: 'w-auto',
+    fit: 'w-fit',
+    content: 'w-fit',
+  
+    'screen-sm': 'max-w-sm w-full',
+    'screen-md': 'max-w-md w-full',
+    'screen-lg': 'max-w-lg w-full',
+  };
   return (
     <Popover.Panel
       anchor={anchor as any}
       className={clsx(
-        'absolute z-10 mt-2 w-96 rounded-xl',
-        'bg-white/5 backdrop-blur-xl border border-white/10',
-        'text-sm text-white shadow-lg',
+        'absolute z-10 mt-2 rounded-xl',
+        'bg-black/40 backdrop-blur-xl border border-white/10',
+        'text-sm text-white shadow-lg drop-shadow-2xl',
         'p-3 space-y-3',
         'transition duration-150 ease-out',
         'data-closed:opacity-0 data-closed:scale-95',
         'max-h-[80vh] overflow-hidden flex flex-col', // ← thêm dòng này
-
+        POPOVER_SIZE_MAP[size],
         className,
       )}
     >

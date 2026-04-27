@@ -11,7 +11,7 @@ import { ROUTES } from '../routes';
 import { useListImageQuery } from '../services/image.service';
 import Button from './Button';
 import Input from './Input';
-import PopoverBox, { PopoverAnchor } from './PopoverBox';
+import PopoverBox, { PopoverAnchor, PopoverSize } from './PopoverBox';
 
 const Header = () => {
   const { t } = useTranslation();
@@ -49,7 +49,7 @@ const Header = () => {
             </Button>
           </PopoverBox.Button>
 
-          <PopoverBox.Panel anchor={PopoverAnchor.BOTTOM_START}>
+          <PopoverBox.Panel size={PopoverSize.LG} anchor={PopoverAnchor.BOTTOM_START}>
             <PopoverBox.Header>{t("dashboard:board_create_form.title")}</PopoverBox.Header>
 
             <PopoverBox.Body>

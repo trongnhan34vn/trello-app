@@ -4,18 +4,17 @@ import Button from '../../components/Button';
 
 import { useTranslation } from 'react-i18next';
 import { FiPlus } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 import Carousel from '../../components/Carousel';
 import WorkspaceThumbnail from '../../components/WorkspaceThumbnail';
+import { BoardConst } from '../../constants';
 import { useBuildCarouselBoards } from '../../hooks/useBuildCarouselBoards';
 import { useCreateWorkspaceForm } from '../../hooks/useCreateWorkspaceForm';
 import { useCreateWorkspaceModal } from '../../hooks/useCreateWorkspaceModal';
 import CreateWorkspaceModal from '../../modals/CreateWorkspaceModal';
+import { buildRouteWithId, ROUTES } from '../../routes';
 import { useListWorkspaceQuery } from '../../services/workspace.service';
 import type { Board } from '../../types/board.type';
-import { useNavigate } from 'react-router-dom';
-import { buildRouteWithId, ROUTES } from '../../routes';
-import { BoardConst } from '../../constants';
-import { Item } from '../../components/board/Item';
 import type { Workspace } from '../../types/workspace.type';
 
 const Dashboard = () => {

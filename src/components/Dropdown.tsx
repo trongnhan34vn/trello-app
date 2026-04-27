@@ -63,8 +63,8 @@ Dropdown.Items = function Items({
     <MenuItems
       anchor={anchor}
       className={clsx(
-        'absolute z-10 mt-2 w-52 origin-top-right rounded-xl',
-        'bg-white/5 backdrop-blur-xl border border-white/10 p-1',
+        'absolute z-10 mt-2 origin-top-right rounded-lg',
+        'bg-bg-secondary backdrop-blur-xl border border-white/10 p-1',
         'text-sm text-white shadow-lg',
         sizeMap[size],
         className,
@@ -83,9 +83,9 @@ Dropdown.Item = function Item({ children, onClick, className, disabled }: any) {
       <div
         onClick={onClick}
         className={clsx(
-          'group flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left ',
+          'group flex w-full text-white/85 items-center text-sm gap-2 rounded-md px-3 py-2 text-left ',
           className,
-          disabled ? '' : 'hover:bg-white/10',
+          disabled ? '' : 'hover:bg-white/10 hover:text-white cursor-pointer transition-all duration-150 ease-in',
         )}
       >
         {children}

@@ -58,7 +58,8 @@ export const LIST_ENDPOINT = {
 export const CARD_ENDPOINT = {
   LIST: '/cards',
   CREATE: '/cards',
-  UPDATE: '/cards/:id'
+  UPDATE: '/cards/:id',
+  DETAIL: '/cards/:id'
 }
 
 export const baseQuery = fetchBaseQuery({

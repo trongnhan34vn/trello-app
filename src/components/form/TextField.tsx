@@ -6,6 +6,7 @@ import {
 } from "react-hook-form";
 import Input from "../Input";
 import FormErrorMessage from "./FormErrorMessage";
+import clsx from "clsx";
 
 interface IProps {
   label?: string;
@@ -13,7 +14,8 @@ interface IProps {
   type?: React.HTMLInputTypeAttribute;
   rules?: RegisterOptions;
   name: string;
-  hidden?: boolean
+  hidden?: boolean;
+  containerClassName?: string;
 }
 const TextField = ({
   type,
@@ -21,11 +23,12 @@ const TextField = ({
   label,
   name,
   rules,
-  hidden
+  hidden,
+  containerClassName
 }: IProps) => {
   const { control } = useFormContext();
   return (
-    <div className="mb-4">
+    <div className={clsx('mb-4', containerClassName)}>
       {label && (
         <label htmlFor="" className="text-white text-sm mb-1 block font-semibold">
           {label} {rules?.required && <span className="text-red-500">*</span>}

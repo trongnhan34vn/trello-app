@@ -1,4 +1,3 @@
-import method from 'lodash/method';
 import { baseApi, buildUrl, CARD_ENDPOINT, HttpMethod } from '.';
 import type { SuccessResponse } from '../types/api.type';
 import type { Card } from '../types/card.type';
@@ -25,7 +24,17 @@ export const cardService = baseApi.injectEndpoints({
         body: param,
       }),
     }),
+    detailCard: builder.query({
+      query: (param) => ({
+        url: buildUrl({ path: CARD_ENDPOINT.DETAIL, params: { id: param.id } }),
+      }),
+    }),
   }),
 });
 
-export const { useListCardQuery, useCreateCardMutation, useUpdateCardMutation } = cardService;
+export const {
+  useListCardQuery,
+  useCreateCardMutation,
+  useUpdateCardMutation,
+  useDetailCardQuery,
+} = cardService;
