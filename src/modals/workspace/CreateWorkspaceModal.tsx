@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import Modal, { ModalSize } from '../components/Modal';
-import CreateWorkspaceForm from '../forms/workspace/CreateWorkspaceForm';
-import type { WorkspaceCreateForm } from '../types/workspace.type';
+import Modal, { ModalSize } from '../../components/Modal';
+import CreateWorkspaceForm from '../../forms/workspace/CreateWorkspaceForm';
+import type { WorkspaceCreateForm } from '../../types/workspace.type';
 
 interface IProps {
   open: boolean;

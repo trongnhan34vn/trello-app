@@ -6,7 +6,7 @@ import { Menu, MenuItem, Sidebar, SubMenu } from 'react-pro-sidebar';
 import { Link, useLocation } from 'react-router-dom';
 import { useCreateWorkspaceForm } from '../hooks/useCreateWorkspaceForm';
 import { useCreateWorkspaceModal } from '../hooks/useCreateWorkspaceModal';
-import CreateWorkspaceModal from '../modals/CreateWorkspaceModal';
+import CreateWorkspaceModal from '../modals/workspace/CreateWorkspaceModal';
 import { buildRouteWithId, ROUTES } from '../routes';
 import { useListWorkspaceQuery } from '../services/workspace.service';
 import Button from './Button';
@@ -94,34 +94,33 @@ const SidebarComp = () => {
                 key={w.id}
                 label={<WorkspaceThumbnail index={index} name={w.name} />}
               >
-                <Link to={boardPath}>
-                  <MenuItem
-                    style={{
-                      paddingLeft: '18%',
-                      backgroundColor: checkActive(boardPath) ? '#282828' : '',
-                      fontWeight: checkActive(boardPath) ? 700 : 400,
-                    }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <FaTable />
-                      <span>{t("dashboard:sidebar.board")}</span>
-                    </div>
-                  </MenuItem>
-                </Link>
-                <Link to={memberPath}>
-                  <MenuItem
-                    style={{
-                      paddingLeft: '18%',
-                      backgroundColor: checkActive(memberPath) ? '#282828' : '',
-                      fontWeight: checkActive(memberPath) ? 700 : 400,
-                    }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <HiUserGroup />
-                      <p>{t("dashboard:sidebar.member")}</p>
-                    </div>
-                  </MenuItem>
-                </Link>
+                <MenuItem
+                  component={<Link to={boardPath} />}
+                  style={{
+                    paddingLeft: '18%',
+                    backgroundColor: checkActive(boardPath) ? '#282828' : '',
+                    fontWeight: checkActive(boardPath) ? 700 : 400,
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <FaTable />
+                    <span>{t('dashboard:sidebar.board')}</span>
+                  </div>
+                </MenuItem>
+                <MenuItem
+                  component={<Link to={memberPath} />}
+                  style={{
+                    paddingLeft: '18%',
+                    backgroundColor: checkActive(memberPath) ? '#282828' : '',
+                    fontWeight: checkActive(memberPath) ? 700 : 400,
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <HiUserGroup />
+                    <p>{t('dashboard:sidebar.member')}</p>
+                  </div>
+                </MenuItem>
+
               </SubMenu>
             );
           })}

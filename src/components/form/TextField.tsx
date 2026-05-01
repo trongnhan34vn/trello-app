@@ -16,6 +16,7 @@ interface IProps {
   name: string;
   hidden?: boolean;
   containerClassName?: string;
+  disabled?: boolean
 }
 const TextField = ({
   type,
@@ -24,7 +25,8 @@ const TextField = ({
   name,
   rules,
   hidden,
-  containerClassName
+  containerClassName,
+  disabled
 }: IProps) => {
   const { control } = useFormContext();
   return (
@@ -42,6 +44,7 @@ const TextField = ({
           return (
             <>
               <Input
+                disabled={disabled}
                 value={value}
                 name={name}
                 onBlur={onBlur}

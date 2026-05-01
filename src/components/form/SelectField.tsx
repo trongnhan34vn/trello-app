@@ -4,6 +4,7 @@ import AsyncSelect from 'react-select/async';
 import type { Option } from '../../types/select.type';
 import FormErrorMessage from './FormErrorMessage';
 import { debounce } from 'lodash';
+import clsx from 'clsx';
 
 const DEBOUNCE_MS = 500;
 
@@ -15,6 +16,7 @@ interface IProps {
   isSearchable?: boolean;
   isMulti?: boolean;
   placeholder?: string;
+  containerClassName?: string
 }
 const SelectField = ({
   options,
@@ -24,6 +26,7 @@ const SelectField = ({
   isSearchable,
   isMulti,
   placeholder,
+  containerClassName,
 }: IProps) => {
   const { control } = useFormContext();
 
@@ -40,7 +43,7 @@ const SelectField = ({
   }, [options]);
 
   return (
-    <div className="mb-5">
+    <div className={clsx(containerClassName, "mb-5")}>
       {label && (
         <label htmlFor={name} className="text-sm text-white mb-1 block font-semibold">
           {label} {rules?.required && <span className="text-red-500">*</span>}
@@ -54,6 +57,7 @@ const SelectField = ({
           return (
             <>
               <AsyncSelect
+                isOptionDisabled={(option) => option.isDisabled}
                 menuPortalTarget={document.body}
                 classNamePrefix="react-select"
                 defaultOptions
@@ -161,7 +165,7 @@ const SelectField = ({
                         ? 'var(--color-bg-card)'
                         : 'transparent',
                     color: 'var(--color-text-primary)',
-                    cursor: 'pointer',
+                    cursor: state.isDisabled ? 'not-allowed' : 'pointer',
                     ':active': { backgroundColor: 'var(--color-bg-secondary)' },
                   }),
                 }}

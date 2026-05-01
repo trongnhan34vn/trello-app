@@ -16,6 +16,7 @@ export const cardService = baseApi.injectEndpoints({
         method: HttpMethod.POST,
         body,
       }),
+      invalidatesTags: ['Card'],
     }),
     updateCard: builder.mutation({
       query: (param) => ({
@@ -23,11 +24,13 @@ export const cardService = baseApi.injectEndpoints({
         method: HttpMethod.PATCH,
         body: param,
       }),
+      invalidatesTags: ['Card'],
     }),
     detailCard: builder.query({
       query: (param) => ({
         url: buildUrl({ path: CARD_ENDPOINT.DETAIL, params: { id: param.id } }),
       }),
+      providesTags: ['Card'],
     }),
   }),
 });

@@ -11,7 +11,7 @@ import { BoardConst } from '../../constants';
 import { useBuildCarouselBoards } from '../../hooks/useBuildCarouselBoards';
 import { useCreateWorkspaceForm } from '../../hooks/useCreateWorkspaceForm';
 import { useCreateWorkspaceModal } from '../../hooks/useCreateWorkspaceModal';
-import CreateWorkspaceModal from '../../modals/CreateWorkspaceModal';
+import CreateWorkspaceModal from '../../modals/workspace/CreateWorkspaceModal';
 import { buildRouteWithId, ROUTES } from '../../routes';
 import { useListWorkspaceQuery } from '../../services/workspace.service';
 import type { Board } from '../../types/board.type';

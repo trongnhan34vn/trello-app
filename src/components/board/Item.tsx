@@ -7,8 +7,8 @@ import { MdDelete } from 'react-icons/md';
 import 'react-quill/dist/quill.snow.css';
 import { CardConst } from '../../constants';
 import CreateCardForm from '../../forms/card/CreateCardForm';
-import DeleteCardModal from '../../modals/DeleteCardModal';
-import DetailCardModal from '../../modals/DetailCardModal';
+import DeleteCardModal from '../../modals/card/DeleteCardModal';
+import DetailCardModal from '../../modals/card/DetailCardModal';
 import type { CardCreateForm } from '../../types/card.type';
 import Dropdown, { DropdownAnchor, DropdownMenuSize } from '../Dropdown';
 

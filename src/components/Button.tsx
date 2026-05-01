@@ -48,7 +48,7 @@ const Button = ({
       primary: "border border-primary text-primary hover:text-black hover:bg-primary",
       secondary:
         "border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-black",
-      disabled: "border border-border text-text-secondary hover:bg-bg-tertiary hover:text-white",
+      disabled: "border border-border text-text-secondary hover:bg-white/10 hover:text-white",
       danger:
         "border border-red-500 text-red-500 hover:bg-red-500 hover:text-black",
     },

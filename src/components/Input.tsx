@@ -49,6 +49,7 @@ const Input = ({
           leftIcon ? 'pl-10' : 'pl-3',
           rightIcon ? 'pr-10' : 'pr-3',
           className,
+          disabled ? 'cursor-not-allowed bg-gray-200' : '',
         )}
       />
 

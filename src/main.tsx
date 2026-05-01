@@ -1,3 +1,4 @@
+import 'react-day-picker/style.css';
 import { createRoot } from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
 import { Provider } from 'react-redux';
@@ -14,51 +15,53 @@ createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <App />
       </BrowserRouter>
-      <Toaster
-        position="top-center"
-        toastOptions={{
-          duration: 4000,
 
-          style: {
-            background: '#ffffff',
-            color: '#16191f', // AWS dark text
-            border: '1px solid #d5dbdb', // AWS border gray
-            borderRadius: '8px',
-            padding: '12px 14px',
-            boxShadow: '0 6px 20px rgba(0, 28, 36, 0.15)',
-          },
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            duration: 4000,
 
-          success: {
             style: {
-              borderLeft: '4px solid #2bb24c',
+              background: '#ffffff',
+              color: '#16191f', // AWS dark text
+              border: '1px solid #d5dbdb', // AWS border gray
+              borderRadius: '8px',
+              padding: '12px 14px',
+              boxShadow: '0 6px 20px rgba(0, 28, 36, 0.15)',
             },
-            iconTheme: {
-              primary: '#2bb24c',
-              secondary: '#ffffff',
-            },
-          },
 
-          error: {
-            style: {
-              borderLeft: '4px solid #d13212',
+            success: {
+              style: {
+                borderLeft: '4px solid #2bb24c',
+              },
+              iconTheme: {
+                primary: '#2bb24c',
+                secondary: '#ffffff',
+              },
             },
-            iconTheme: {
-              primary: '#d13212',
-              secondary: '#ffffff',
-            },
-          },
 
-          loading: {
-            style: {
-              borderLeft: '4px solid #0972d3',
+            error: {
+              style: {
+                borderLeft: '4px solid #d13212',
+              },
+              iconTheme: {
+                primary: '#d13212',
+                secondary: '#ffffff',
+              },
             },
-            iconTheme: {
-              primary: '#0972d3',
-              secondary: '#ffffff',
+
+            loading: {
+              style: {
+                borderLeft: '4px solid #0972d3',
+              },
+              iconTheme: {
+                primary: '#0972d3',
+                secondary: '#ffffff',
+              },
             },
-          },
-        }}
-      />
+          }}
+        />
     </LoadingProvider>
   </Provider>,
 );
+

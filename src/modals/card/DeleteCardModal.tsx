@@ -1,7 +1,7 @@
-import Button from '../components/Button';
-import TextField from '../components/form/TextField';
-import Modal from '../components/Modal';
-import Form from '../forms';
+import Button from '../../components/Button';
+import TextField from '../../components/form/TextField';
+import Modal from '../../components/Modal';
+import Form from '../../forms';
 
 interface IProps {
   open: boolean;
@@ -14,7 +14,7 @@ const DeleteCardModal = ({ id, title, open, close }: IProps) => {
     <Modal open={open} onClose={close}>
       <Modal.Header>Delete list {title}?</Modal.Header>
       <Modal.Body>
-        <Form defaultValues={{}} onSubmit={() => {}}>
+        <Form defaultValues={{id}} onSubmit={() => {}}>
           <p className="text-white/80 mb-1">
             Are you sure you want to delete list {title}? This action cannot be undone.
           </p>
