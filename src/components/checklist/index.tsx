@@ -6,18 +6,27 @@ interface IProps {
   onCreateChecklistItem: (data: any) => void;
   onUpdateCompletedStateChecklistItem: (value: any) => void;
   onUpdateDueDateChecklistItem: (payload: any) => void;
+  onUpdateChecklistName: (payload: any) => void;
+  onDeleteChecklistItem: (value: any) => void;
+  onDeleteChecklist: (value: any) => void;
 }
 const ChecklistContainer = ({
   checklists,
   onCreateChecklistItem,
   onUpdateCompletedStateChecklistItem,
-  onUpdateDueDateChecklistItem
+  onUpdateDueDateChecklistItem,
+  onUpdateChecklistName,
+  onDeleteChecklistItem,
+  onDeleteChecklist
 }: IProps) => {
   return (
-    <div className="max-h-92 h-full overflow-scroll">
+    <div className="flex-1 min-h-0 overflow-y-auto pb-4 pr-2 custom-scrollbar">
       {checklists?.map((c) => {
         return (
           <ChecklistComponent
+            onDeleteChecklist={onDeleteChecklist}
+            onDeleteChecklistItem={onDeleteChecklistItem}
+            onUpdateChecklistName={onUpdateChecklistName}
             onUpdateDueDateChecklistItem={onUpdateDueDateChecklistItem}
             onUpdateCompletedStateChecklistItem={onUpdateCompletedStateChecklistItem}
             onCreateChecklistItem={onCreateChecklistItem}

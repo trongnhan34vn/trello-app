@@ -21,15 +21,20 @@ import { UpdateCardField, useUpdateCard } from '../../hooks/useUpdateCard';
 import { useDetailCardQuery, useUpdateCardMutation } from '../../services/card.service';
 import {
   useCreateChecklistItemMutation,
+  useDeleteChecklistItemMutation,
   useUpdateChecklistItemMutation,
 } from '../../services/checklist.item.service';
 import {
   useCreateChecklistMutation,
+  useDeleteChecklistMutation,
   useListChecklistQuery,
+  useUpdateChecklistMutation,
 } from '../../services/checklist.service';
 import type { ErrorResponse } from '../../types/api.type';
 import type { ChecklistItemCreatePayload } from '../../types/checklist.item.type';
 import type { ChecklistCreatePayload } from '../../types/checklist.type';
+import { useParams } from 'react-router-dom';
+import { useListBoardMemberQuery } from '../../services/board.member.service';
 
 interface IProps {
   open: boolean;
@@ -39,6 +44,7 @@ interface IProps {
 }
 const DetailCardModal = ({ open, close, title, id }: IProps) => {
   if (!id) return;
+  const { id: boardId } = useParams();
 
   const { data: resCard } = useDetailCardQuery({ id }, { skip: !open });
   const card = resCard ? resCard.data : null;
@@ -54,12 +60,26 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
   const [createChecklist] = useCreateChecklistMutation();
   const [createChecklistItem] = useCreateChecklistItemMutation();
   const [updateChecklistItem] = useUpdateChecklistItemMutation();
+  const [deleteChecklistItem] = useDeleteChecklistItemMutation();
+
+  const [updateChecklist] = useUpdateChecklistMutation();
+  const [deleteChecklist] = useDeleteChecklistMutation();
+
   const { data: resChecklist } = useListChecklistQuery(
     { cardId: card?.id ?? id ?? '' },
     {
       skip: !card?.id,
     },
   );
+
+  const { data: resBoardMember } = useListBoardMemberQuery(
+    { boardId: boardId || '' },
+    {
+      skip: !boardId,
+    },
+  );
+
+  const boardMembers = resBoardMember ? resBoardMember.data : [];
 
   const checklists = resChecklist ? resChecklist.data : null;
 
@@ -117,8 +137,29 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
     handle(() => updateChecklistItem(payload), {
       hasLoading: false,
       onError: (error: any) => toast.error(error.message),
-    })
-  }
+    });
+  };
+
+  const handleUpdateChecklistName = (payload: any) => {
+    handle(() => updateChecklist(payload), {
+      hasLoading: false,
+      onError: (error: any) => toast.error(error.message),
+    });
+  };
+
+  const handleDeleteChecklistItem = (value: any) => {
+    handle(() => deleteChecklistItem(value), {
+      hasLoading: false,
+      onError: (error: any) => toast.error(error.message),
+    });
+  };
+
+  const handleDeleteChecklist = (value: any) => {
+    handle(() => deleteChecklist(value), {
+      hasLoading: false,
+      onError: (error: any) => toast.error(error.message),
+    });
+  };
 
   const items = [
     {
@@ -147,7 +188,7 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
         toTime: card?.dueDate ? dayjs(card.dueDate).format('HH:mm') : '00:00',
       },
 
-      form: ({ close, defaultValues }) => (
+      form: ({ close, defaultValues }: any) => (
         <DatePickerCardForm
           defaultValues={defaultValues}
           onSubmit={handleEditDateCard}
@@ -166,7 +207,7 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
         position: null,
         cardId: card?.id || id || '',
       },
-      form: ({ close, defaultValues }) => (
+      form: ({ close, defaultValues }: any) => (
         <CreateCheckListForm
           onSubmit={handleCreateChecklist}
           defaultValues={defaultValues}
@@ -181,7 +222,7 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
       isDisabled: false,
       header: 'Add member',
       size: PopoverSize.LG,
-      form: () => <AddMemberForm />,
+      form: () => <AddMemberForm members={boardMembers} />,
     },
   ];
 
@@ -247,8 +288,8 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
       <Modal.Header className="text-lg! border-b border-border mb-4 pb-3 ">
         {card?.title || title || ''}
       </Modal.Header>
-      <Modal.Body>
-        <div>
+      <Modal.Body className="flex flex-col">
+        <div className="shrink-0">
           <div className="flex items-center gap-4 mb-8">
             <Checkbox
               checked={card?.completed ? true : false}
@@ -285,7 +326,7 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
                         {({ close }) => (
                           <>
                             <PopoverBox.Header>{header}</PopoverBox.Header>
-                            <PopoverBox.Body>{form({ close, defaultValues })}</PopoverBox.Body>
+                            <PopoverBox.Body>{form?.({ close, defaultValues })}</PopoverBox.Body>
                           </>
                         )}
                       </PopoverBox.Panel>
@@ -323,10 +364,13 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
           </div>
         </div>
         <ChecklistContainer
+          onDeleteChecklist={handleDeleteChecklist}
+          onDeleteChecklistItem={handleDeleteChecklistItem}
+          onUpdateChecklistName={handleUpdateChecklistName}
           onUpdateDueDateChecklistItem={handleUpdateDueDateChecklistItem}
           onUpdateCompletedStateChecklistItem={handleUpdateCompletedStateChecklistItem}
           onCreateChecklistItem={handleCreateChecklistItem}
-          checklists={checklists}
+          checklists={checklists || []}
         />
       </Modal.Body>
     </Modal>

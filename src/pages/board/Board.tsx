@@ -63,7 +63,7 @@ const Board = () => {
   const [updateList] = useUpdateListMutation();
 
   const { data: resBoardMember } = useListBoardMemberQuery(
-    { boardId: board?.id },
+    { boardId: board?.id || '' },
     {
       skip: !board?.id,
     },
