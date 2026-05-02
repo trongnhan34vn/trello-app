@@ -23,6 +23,7 @@ interface IProps {
   checklist: Checklist;
   onCreateChecklistItem: (data: any) => void;
   onUpdateCompletedStateChecklistItem: (value: any) => void;
+  onUpdateDueDateChecklistItem: (payload: any) => void;
 }
 
 const DatePickerSync = () => {
@@ -44,6 +45,7 @@ const ChecklistComponent = ({
   checklist,
   onCreateChecklistItem,
   onUpdateCompletedStateChecklistItem,
+  onUpdateDueDateChecklistItem
 }: IProps) => {
   if (!checklist) return;
   const { name, checklistItems } = checklist;
@@ -117,6 +119,7 @@ const ChecklistComponent = ({
         {checklistItems.map((ci) => {
           return (
             <ChecklistItemComponent
+              onUpdateDueDateChecklistItem={onUpdateDueDateChecklistItem}
               onUpdateCompletedStateChecklistItem={onUpdateCompletedStateChecklistItem}
               key={ci?.id}
               checklistItem={ci}
@@ -129,116 +132,130 @@ const ChecklistComponent = ({
         {isOnCreateChecklistItem ? (
           <div className="p-2 bg-bg-card/20 drop-shadow-lg rounded">
             <Form defaultValues={defaultValues} onSubmit={handleSubmit}>
-              <TextField name="name" />
-              <div className="flex justify-between">
-                <div>
-                  <Button>Save</Button>
-                  <Button
-                    type="button"
-                    onClick={() =>
-                      setOnShowCreateChecklistItem({
-                        checklistId: checklist?.id || '',
-                        state: false,
-                      })
-                    }
-                    className="text-text-muted! hover:text-red-500!"
-                    variant="text"
-                  >
-                    Cancel
-                  </Button>
-                </div>
+              {(methods: any) => (
+                <>
+                  <TextField name="name" />
+                  <div className="flex justify-between">
+                    <div>
+                      <Button>Save</Button>
+                      <Button
+                        type="button"
+                        onClick={() => {
+                          setOnShowCreateChecklistItem({
+                            checklistId: checklist?.id || '',
+                            state: false,
+                          });
+                          setSubmitWithDueDate({ checklistId: checklist?.id || '', state: false });
+                        }}
+                        className="text-text-muted! hover:text-red-500!"
+                        variant="text"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
 
-                <div>
-                  <PopoverBox>
-                    {({ open }) => (
-                      <>
-                        <PopoverBox.Button>
-                          <Button
-                            className={clsx(
-                              'px-1!',
-                              isSubmitWithDueDate.checklistId === checklist?.id &&
-                                isSubmitWithDueDate.state
-                                ? 'text-primary!'
-                                : open
-                                  ? 'text-white'
-                                  : 'text-text-muted! hover:text-white!',
-                            )}
-                            variant="text"
-                            color="disabled"
-                          >
-                            <FaRegClock />
-                            <span>Due Date</span>
-                          </Button>
-                        </PopoverBox.Button>
-                        <PopoverBox.Panel anchor={PopoverAnchor.RIGHT_START}>
-                          {({ close }) => (
-                            <>
-                              <PopoverBox.Header>Due Date</PopoverBox.Header>
-                              <PopoverBox.Body>
-                                <div className="w-full">
-                                  <DatePickerField
-                                    mode={DayPickerMode.SINGLE}
-                                    name="dueDate"
-                                    rules={{ required: '' }}
-                                  />
-                                  <DatePickerSync />
-                                  <div className="space-y-4">
-                                    <TimeValidationError />
-
-                                    <div className="grid grid-cols-2 gap-4 items-end">
-                                      <TextField
-                                        label="Due Date"
-                                        disabled
-                                        name="to"
-                                        containerClassName="mb-0!"
+                    <div>
+                      <PopoverBox>
+                        {({ open }) => (
+                          <>
+                            <PopoverBox.Button>
+                              <Button
+                                className={clsx(
+                                  'px-1!',
+                                  isSubmitWithDueDate.checklistId === checklist?.id &&
+                                    isSubmitWithDueDate.state
+                                    ? 'text-primary!'
+                                    : open
+                                      ? 'text-white'
+                                      : 'text-text-muted! hover:text-white!',
+                                )}
+                                variant="text"
+                                color="disabled"
+                              >
+                                <FaRegClock />
+                                <span>Due Date</span>
+                              </Button>
+                            </PopoverBox.Button>
+                            <PopoverBox.Panel anchor={PopoverAnchor.RIGHT_START}>
+                              {({ close }) => (
+                                <>
+                                  <PopoverBox.Header>Due Date</PopoverBox.Header>
+                                  <PopoverBox.Body>
+                                    <div className="w-full">
+                                      <DatePickerField
+                                        mode={DayPickerMode.SINGLE}
+                                        name="dueDate"
+                                        rules={{ required: '' }}
                                       />
-                                      <TimePickerField
-                                        hasDisplayError={false}
-                                        name="toTime"
-                                        containerClassName="mb-0!"
-                                        rules={{
-                                          validate: (value: string, formValues: any) => {
-                                            const dueDate = formValues.date?.to;
-                                            if (!dueDate || !value) return true;
+                                      <DatePickerSync />
+                                      <div className="space-y-4">
+                                        <TimeValidationError />
 
-                                            const now = dayjs();
-                                            const selectedDateTime = dayjs(dueDate)
-                                              .hour(parseInt(value.split(':')[0]))
-                                              .minute(parseInt(value.split(':')[1]));
+                                        <div className="grid grid-cols-2 gap-4 items-end">
+                                          <TextField
+                                            label="Due Date"
+                                            disabled
+                                            name="to"
+                                            containerClassName="mb-0!"
+                                          />
+                                          <TimePickerField
+                                            hasDisplayError={false}
+                                            name="toTime"
+                                            containerClassName="mb-0!"
+                                            rules={{
+                                              required: 'Time is required',
+                                              validate: (value: string, formValues: any) => {
+                                                const dueDate = formValues.dueDate;
+                                                if (!dueDate || !value) return true;
 
-                                            if (selectedDateTime.isBefore(now)) {
-                                              return 'Due time cannot be in the past';
-                                            }
-                                            return true;
-                                          },
+                                                const now = dayjs();
+                                                const selectedDateTime = dayjs(dueDate)
+                                                  .hour(parseInt(value.split(':')[0]))
+                                                  .minute(parseInt(value.split(':')[1]));
+
+                                                if (selectedDateTime.isBefore(now)) {
+                                                  return 'Due time cannot be in the past';
+                                                }
+                                                return true;
+                                              },
+                                            }}
+
+                                          />
+                                        </div>
+                                      </div>
+
+                                      <Button
+                                        onClick={async () => {
+                                          const isValid = await methods.trigger([
+                                            'dueDate',
+                                            'toTime',
+                                          ]);
+                                          if (isValid) {
+                                            close();
+                                            setSubmitWithDueDate({
+                                              checklistId: checklist?.id || '',
+                                              state: true,
+                                            });
+                                          }
                                         }}
-                                      />
+                                        className="w-full mt-4"
+                                      >
+                                        Save
+                                      </Button>
                                     </div>
-                                  </div>
-
-                                  <Button
-                                    onClick={() => {
-                                      close();
-                                      setSubmitWithDueDate({
-                                        checklistId: checklist?.id || '',
-                                        state: true,
-                                      });
-                                    }}
-                                    className="w-full mt-4"
-                                  >
-                                    Save
-                                  </Button>
-                                </div>
-                              </PopoverBox.Body>
-                            </>
-                          )}
-                        </PopoverBox.Panel>
-                      </>
-                    )}
-                  </PopoverBox>
-                </div>
-              </div>
+                                  </PopoverBox.Body>
+                                </>
+                              )}
+                            </PopoverBox.Panel>
+                          </>
+                        )}
+                      </PopoverBox>
+                    </div>
+                  </div>
+                </>
+              )}
             </Form>
+
           </div>
         ) : (
           <Button

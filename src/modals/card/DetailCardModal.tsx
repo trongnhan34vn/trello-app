@@ -113,6 +113,13 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
     });
   };
 
+  const handleUpdateDueDateChecklistItem = (payload: any) => {
+    handle(() => updateChecklistItem(payload), {
+      hasLoading: false,
+      onError: (error: any) => toast.error(error.message),
+    })
+  }
+
   const items = [
     {
       id: 1,
@@ -316,6 +323,7 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
           </div>
         </div>
         <ChecklistContainer
+          onUpdateDueDateChecklistItem={handleUpdateDueDateChecklistItem}
           onUpdateCompletedStateChecklistItem={handleUpdateCompletedStateChecklistItem}
           onCreateChecklistItem={handleCreateChecklistItem}
           checklists={checklists}
