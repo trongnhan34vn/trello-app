@@ -1,10 +1,9 @@
 import { useState, type ReactNode } from 'react';
-import WorkspaceThumbnail from '../components/WorkspaceThumbnail';
-import Button from '../components/Button';
 import { MdGroupAdd } from 'react-icons/md';
-import Modal from '../components/Modal';
-import Form from '../forms';
-import Select from '../components/Select';
+import Button from '../components/Button';
+import WorkspaceThumbnail from '../components/WorkspaceThumbnail';
+import InviteWorkspaceMemberModal from '../modals/workspace/InviteWorkspaceMemberModal';
+import type { WorkspaceMember } from '../types/workspace.member.type';
 
 interface IProps {
   index: string;
@@ -12,8 +11,18 @@ interface IProps {
   name: string;
   title: string;
   isWorkspaceMember?: boolean;
+  workspaceMembers?: WorkspaceMember[];
+  workspaceId?: string;
 }
-const WorkspaceLayout = ({ index, children, name, title, isWorkspaceMember = false }: IProps) => {
+const WorkspaceLayout = ({
+  index,
+  children,
+  name,
+  title,
+  isWorkspaceMember = false,
+  workspaceMembers,
+  workspaceId,
+}: IProps) => {
   const [isOpenInviteMemberModal, setOpenInviteMemberModal] = useState(false);
   return (
     <div className="p-4">
@@ -31,23 +40,12 @@ const WorkspaceLayout = ({ index, children, name, title, isWorkspaceMember = fal
         </div>
         {children}
       </div>
-      <Modal
-        hasXMark
+      <InviteWorkspaceMemberModal
+        workspaceId={workspaceId}
+        workspaceMembers={workspaceMembers}
         open={isOpenInviteMemberModal}
-        onClose={() => setOpenInviteMemberModal(false)}
-      >
-        <Modal.Header>Invite Member</Modal.Header>
-        <Modal.Body>
-          <Form defaultValues={{}} onSubmit={() => { }}>
-            <div className="w-full flex gap-2">
-              <div className="flex-1">
-                <Select isMulti isSearchable name="member" options={async () => []} />
-              </div>
-              <Button className="">Send</Button>
-            </div>
-          </Form>
-        </Modal.Body>
-      </Modal>
+        close={() => setOpenInviteMemberModal(false)}
+      />
     </div>
   );
 };

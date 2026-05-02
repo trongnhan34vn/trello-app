@@ -23,7 +23,8 @@ export const AUTH_ENDPOINT = {
 };
 
 export const USER_ENDPOINT = {
-  ME: '/users/me'
+  ME: '/users/me',
+  LIST: 'users'
 }
 
 export const WORKSPACE_CATEGORY_ENDPOINT = {
@@ -58,7 +59,29 @@ export const LIST_ENDPOINT = {
 export const CARD_ENDPOINT = {
   LIST: '/cards',
   CREATE: '/cards',
-  UPDATE: '/cards/:id'
+  UPDATE: '/cards/:id',
+  DETAIL: '/cards/:id'
+}
+
+export const BOARD_MEMBER_ENDPOINT = {
+  LIST: '/board-members',
+  CREATE: '/board-members'
+}
+
+export const WORKSPACE_MEMBER_ENDPOINT = {
+  CREATE: '/workspace-members'
+}
+
+export const CHECKLIST_ENDPOINT = {
+  LIST: '/checklists',
+  CREATE: '/checklists',
+  UPDATE: '/checklists/:id'
+}
+
+export const CHECKLIST_ITEM_ENDPOINT = {
+  LIST: '/checklist-items',
+  CREATE: '/checklist-items',
+  UPDATE: '/checklist-items/:id'
 }
 
 export const baseQuery = fetchBaseQuery({
@@ -68,7 +91,7 @@ export const baseQuery = fetchBaseQuery({
 
 const baseQueryWithReauth: BaseQueryFn = async (args, api, extraOptions) => {
   const result = await baseQuery(args, api, extraOptions);
-  const isConfirmEmailPage = window.location.pathname.includes('/confirm') || window.location.pathname.includes('/');
+  const isConfirmEmailPage = window.location.pathname.includes('/confirm') || window.location.pathname == ('/');
 
   if (result.error?.status == 401 && !isConfirmEmailPage) {
     window.location.href = '/';
@@ -80,7 +103,7 @@ const baseQueryWithReauth: BaseQueryFn = async (args, api, extraOptions) => {
 export const baseApi = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Workspace', 'User', 'Auth', 'Board', 'List', 'Card'],
+  tagTypes: ['Workspace', 'User', 'Auth', 'Board', 'List', 'Card', 'BoardMember', 'Checklist', 'ChecklistItem'],
   endpoints: () => ({}), // empty base
 });
 

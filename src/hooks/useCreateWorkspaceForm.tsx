@@ -2,13 +2,10 @@ import { toast } from 'react-hot-toast';
 import { useCreateWorkspaceMutation } from '../services/workspace.service';
 import type { ErrorResponse, SuccessResponse } from '../types/api.type';
 import type { WorkspaceCreateForm } from '../types/workspace.type';
-import { useMutationHandler } from './useMutationHandler';
-import { useDispatch } from 'react-redux';
-import { closeModal } from '../redux/workspace.ui.slice';
 import { useCreateWorkspaceModal } from './useCreateWorkspaceModal';
+import { useMutationHandler } from './useMutationHandler';
 
 export const useCreateWorkspaceForm = () => {
-  const dispatch = useDispatch();
   const defaultValues: WorkspaceCreateForm = {
     name: '',
     category: null,

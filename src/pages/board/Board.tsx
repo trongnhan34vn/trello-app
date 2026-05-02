@@ -1,28 +1,29 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { MdGroupAdd } from 'react-icons/md';
+import { useNavigate, useParams } from 'react-router-dom';
 import userImg from '../../assets/user.png';
 import KanbanBoard from '../../components/board';
 import Button from '../../components/Button';
-import Modal from '../../components/Modal';
-import Select from '../../components/Select';
-import Form from '../../forms';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ROUTES } from '../../routes';
-import { useDetailBoardQuery } from '../../services/board.service';
 import { useLoading } from '../../hooks/useLoading';
 import { useMutationHandler } from '../../hooks/useMutationHandler';
+import InviteBoardMemberModal from '../../modals/board/InviteBoardMemberModal';
+import { ROUTES } from '../../routes';
+import { useListBoardMemberQuery } from '../../services/board.member.service';
+import { useDetailBoardQuery } from '../../services/board.service';
 import {
-  useListCardQuery,
   useCreateCardMutation,
+  useListCardQuery,
   useUpdateCardMutation,
 } from '../../services/card.service';
-import { useListListQuery, useCreateListMutation, useUpdateListMutation } from '../../services/list.service';
-import type { CardCreateForm, DragUpdateCard } from '../../types/card.type';
-import type { DragUpdateList, ListCreateForm } from '../../types/list.type';
-import type { Card } from '../../types/card.type';
-import type { List } from '../../types/list.type';
+import {
+  useCreateListMutation,
+  useListListQuery,
+  useUpdateListMutation,
+} from '../../services/list.service';
 import type { ErrorResponse, SuccessResponse } from '../../types/api.type';
+import type { Card, CardCreateForm, DragUpdateCard } from '../../types/card.type';
+import type { DragUpdateList, List, ListCreateForm } from '../../types/list.type';
 
 const Board = () => {
   const { id } = useParams();
@@ -61,6 +62,15 @@ const Board = () => {
   const [updateCard] = useUpdateCardMutation();
   const [updateList] = useUpdateListMutation();
 
+  const { data: resBoardMember } = useListBoardMemberQuery(
+    { boardId: board?.id },
+    {
+      skip: !board?.id,
+    },
+  );
+
+  const boardMembers = resBoardMember ? resBoardMember.data : [];
+  
   const handleCreateList = async (payload: ListCreateForm): Promise<List | null> => {
     let result: List | null = null;
 
@@ -149,23 +159,12 @@ const Board = () => {
         />
       </div>
       {/* Modal */}
-      <Modal
-        hasXMark
+      <InviteBoardMemberModal
+        boardMembers={boardMembers}
         open={isOpenInviteMemberModal}
-        onClose={() => setOpenInviteMemberModal(false)}
-      >
-        <Modal.Header>Invite Member</Modal.Header>
-        <Modal.Body>
-          <Form defaultValues={{}} onSubmit={() => { }}>
-            <div className="w-full flex gap-2">
-              <div className="flex-1">
-                <Select isMulti isSearchable name="member" options={async () => []} />
-              </div>
-              <Button className="">Send</Button>
-            </div>
-          </Form>
-        </Modal.Body>
-      </Modal>
+        close={() => setOpenInviteMemberModal(false)}
+        boardId={board?.id ?? ''}
+      />
     </div>
   );
 };

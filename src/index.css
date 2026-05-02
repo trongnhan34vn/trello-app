@@ -1,115 +1,122 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @font-face {
-  font-family: "Gotham";
-  src: url("/fonts/Gotham-Thin.otf") format("opentype"),
-    url("/fonts/GothamLight.ttf") format("truetype");
+  font-family: 'Gotham';
+  src:
+    url('/fonts/Gotham-Thin.otf') format('opentype'),
+    url('/fonts/GothamLight.ttf') format('truetype');
   font-weight: 100;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "Gotham";
-  src: url("/fonts/Gotham-ThinItalic.otf") format("opentype");
+  font-family: 'Gotham';
+  src: url('/fonts/Gotham-ThinItalic.otf') format('opentype');
   font-weight: 100;
   font-style: italic;
 }
 
 /* Gotham ExtraLight */
 @font-face {
-  font-family: "Gotham";
-  src: url("/fonts/Gotham-XLight.otf") format("opentype"),
-    url("/fonts/GothamLight.ttf") format("truetype");
+  font-family: 'Gotham';
+  src:
+    url('/fonts/Gotham-XLight.otf') format('opentype'),
+    url('/fonts/GothamLight.ttf') format('truetype');
   font-weight: 200;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "Gotham";
-  src: url("/fonts/Gotham-XLightItalic.otf") format("opentype");
+  font-family: 'Gotham';
+  src: url('/fonts/Gotham-XLightItalic.otf') format('opentype');
   font-weight: 200;
   font-style: italic;
 }
 
 /* Gotham Light */
 @font-face {
-  font-family: "Gotham";
-  src: url("/fonts/Gotham-Light.otf") format("opentype"),
-    url("/fonts/GothamLight.ttf") format("truetype");
+  font-family: 'Gotham';
+  src:
+    url('/fonts/Gotham-Light.otf') format('opentype'),
+    url('/fonts/GothamLight.ttf') format('truetype');
   font-weight: 300;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "Gotham";
-  src: url("/fonts/GothamLightItalic.ttf") format("truetype");
+  font-family: 'Gotham';
+  src: url('/fonts/GothamLightItalic.ttf') format('truetype');
   font-weight: 300;
   font-style: italic;
 }
 
 /* Gotham Book */
 @font-face {
-  font-family: "Gotham";
-  src: url("/fonts/GothamBook.ttf") format("truetype");
+  font-family: 'Gotham';
+  src: url('/fonts/GothamBook.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
-  size-adjust: 100%;           /* thử điều chỉnh 95%–105% */
-  ascent-override: 90%;        /* kéo ascender xuống */
+  size-adjust: 100%;
+  /* thử điều chỉnh 95%–105% */
+  ascent-override: 90%;
+  /* kéo ascender xuống */
   descent-override: 20%;
   line-gap-override: 0%;
 }
 
 @font-face {
-  font-family: "Gotham";
-  src: url("/fonts/GothamBookItalic.ttf") format("truetype");
+  font-family: 'Gotham';
+  src: url('/fonts/GothamBookItalic.ttf') format('truetype');
   font-weight: 400;
   font-style: italic;
 }
 
 /* Gotham Medium */
 @font-face {
-  font-family: "Gotham";
-  src: url("/fonts/GothamMedium.ttf") format("truetype"),
-    url("/fonts/GothamMedium_1.ttf") format("truetype");
+  font-family: 'Gotham';
+  src:
+    url('/fonts/GothamMedium.ttf') format('truetype'),
+    url('/fonts/GothamMedium_1.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "Gotham";
-  src: url("/fonts/GothamMediumItalic.ttf") format("truetype");
+  font-family: 'Gotham';
+  src: url('/fonts/GothamMediumItalic.ttf') format('truetype');
   font-weight: 500;
   font-style: italic;
 }
 
 /* Gotham Bold */
 @font-face {
-  font-family: "Gotham";
-  src: url("/fonts/Gotham-Bold.otf") format("opentype"),
-    url("/fonts/GothamBold.ttf") format("truetype");
+  font-family: 'Gotham';
+  src:
+    url('/fonts/Gotham-Bold.otf') format('opentype'),
+    url('/fonts/GothamBold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "Gotham";
-  src: url("/fonts/GothamBoldItalic.ttf") format("truetype");
+  font-family: 'Gotham';
+  src: url('/fonts/GothamBoldItalic.ttf') format('truetype');
   font-weight: 700;
   font-style: italic;
 }
 
 /* Gotham Black */
 @font-face {
-  font-family: "Gotham";
-  src: url("/fonts/Gotham-Black.otf") format("opentype");
+  font-family: 'Gotham';
+  src: url('/fonts/Gotham-Black.otf') format('opentype');
   font-weight: 900;
   font-style: normal;
 }
 
 /* Gotham Ultra Italic */
 @font-face {
-  font-family: "Gotham";
-  src: url("/fonts/Gotham-UltraItalic.otf") format("opentype");
+  font-family: 'Gotham';
+  src: url('/fonts/Gotham-UltraItalic.otf') format('opentype');
   font-weight: 900;
   font-style: italic;
 }
@@ -157,7 +164,8 @@
   --color-player-bg: #181818;
 }
 
-html, body {
+html,
+body {
   overflow: hidden;
   height: 100%;
 }
@@ -169,7 +177,7 @@ html, body {
 
 :root {
   line-height: 1.5;
-  font-family: "Gotham", sans-serif;
+  font-family: 'Gotham', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-synthesis: none;
@@ -192,7 +200,9 @@ html, body {
 
 * {
   outline: none;
-}/* Chrome, Edge, Safari */
+}
+
+/* Chrome, Edge, Safari */
 ::-webkit-scrollbar {
   display: none;
 }
@@ -206,3 +216,486 @@ html, body {
 * {
   -ms-overflow-style: none;
 }
+
+/* Custom React Quill styles */
+.quill-custom .ql-toolbar {
+  border: none !important;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  padding: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.quill-custom .ql-container {
+  border: none !important;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Gotham', sans-serif !important;
+  font-size: 0.875rem !important;
+  color: white !important;
+  transition: all 0.2s ease-in;
+  border: 2px solid transparent !important;
+}
+
+/* Ant Design Picker Customization (to match Input.tsx) */
+.ant-picker {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border: 2px solid transparent !important;
+  border-radius: 0.5rem !important;
+  height: 40px !important;
+  padding: 0 12px !important;
+  transition: all 200ms ease-in !important;
+  width: 100%;
+}
+
+.ant-picker:hover,
+.ant-picker-focused {
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: none !important;
+}
+
+.ant-picker-input > input {
+  color: white !important;
+  font-family: 'Gotham', sans-serif !important;
+  font-size: 0.875rem !important;
+}
+
+.ant-picker-input > input::placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.ant-picker-suffix {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.ant-picker-clear {
+  background-color: transparent !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.ant-picker-active-bar {
+  display: none !important;
+}
+
+/* Ant Design Dropdown Panel */
+.ant-picker-dropdown {
+  z-index: 9999 !important;
+}
+
+.ant-picker-panel-container {
+  background-color: var(--color-bg-tertiary) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
+}
+
+.ant-picker-content th,
+.ant-picker-content td,
+.ant-picker-time-panel-cell-inner {
+  color: white !important;
+}
+
+.ant-picker-time-panel-column > li.ant-picker-time-panel-cell-selected .ant-picker-time-panel-cell-inner {
+  background-color: rgba(29, 185, 84, 0.2) !important;
+  color: #1db954 !important;
+}
+
+.ant-picker-time-panel-column > li:hover .ant-picker-time-panel-cell-inner {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+.ant-picker-time-panel-column {
+  scrollbar-width: none !important;
+  border-inline-start: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.ant-picker-time-panel-column:first-child {
+  border-inline-start: none !important;
+}
+
+.ant-picker-time-panel-column::-webkit-scrollbar {
+  display: none !important;
+}
+
+.ant-picker-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.ant-picker-now-btn {
+  color: #1db954 !important;
+}
+
+.ant-picker-ok > button {
+  background-color: #1db954 !important;
+  color: #000000 !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 4px 12px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s !important;
+}
+
+.ant-picker-ok > button:hover {
+  background-color: #1aa34a !important;
+}
+
+.ant-picker-ok > button:disabled {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.2) !important;
+}
+
+
+
+
+.quill-custom .ql-editor {
+  padding: 12px;
+  flex: 1;
+  min-height: 120px;
+}
+
+.quill-custom .ql-editor.ql-blank::before {
+  color: rgba(255, 255, 255, 0.4) !important;
+  font-style: normal;
+}
+
+/* Hover & Focus states */
+.quill-custom:hover .ql-container,
+.quill-custom:hover .ql-toolbar {
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.quill-custom .ql-container:focus-within {
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  outline: none;
+}
+
+/* Toolbar button colors */
+.quill-custom .ql-snow .ql-stroke {
+  stroke: rgba(255, 255, 255, 0.6) !important;
+}
+
+.quill-custom .ql-snow .ql-fill {
+  fill: rgba(255, 255, 255, 0.6) !important;
+}
+
+.quill-custom .ql-snow .ql-picker {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.quill-custom .ql-snow.ql-toolbar button:hover .ql-stroke,
+.quill-custom .ql-snow.ql-toolbar button.ql-active .ql-stroke {
+  stroke: var(--color-primary) !important;
+}
+
+.quill-custom .ql-snow.ql-toolbar button:hover .ql-fill,
+.quill-custom .ql-snow.ql-toolbar button.ql-active .ql-fill {
+  fill: var(--color-primary) !important;
+}
+
+/* Quill Picker (Select) Styling */
+.quill-custom .ql-snow .ql-picker-label {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.quill-custom .ql-snow .ql-picker-label:hover,
+.quill-custom .ql-snow .ql-picker.ql-expanded .ql-picker-label {
+  color: var(--color-primary) !important;
+}
+
+.quill-custom .ql-snow .ql-picker-label::before {
+  color: inherit !important;
+}
+
+.quill-custom .ql-snow .ql-picker-options {
+  background-color: var(--color-bg-tertiary) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 0.5rem;
+  padding: 4px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+.quill-custom .ql-snow .ql-picker-item {
+  color: rgba(255, 255, 255, 0.7) !important;
+  padding: 4px 8px;
+  border-radius: 0.25rem;
+}
+
+.quill-custom .ql-snow .ql-picker-item:hover,
+.quill-custom .ql-snow .ql-picker-item.ql-selected {
+  color: white !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.quill-custom .ql-snow .ql-picker.ql-header .ql-picker-label[data-label]::before,
+.quill-custom .ql-snow .ql-picker.ql-header .ql-picker-item[data-label]::before {
+  content: attr(data-label) !important;
+}
+
+/* React Day Picker Customization */
+.rdp-root {
+  --rdp-accent-color: var(--color-primary) !important;
+  --rdp-accent-background-color: var(--color-primary) !important;
+  --rdp-day_button-border-radius: 50% !important;
+  --rdp-selected-font-weight: 600 !important;
+  --rdp-day-width: 38px !important;
+  --rdp-day-height: 38px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  color: var(--color-text-primary) !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+}
+
+.rdp-months {
+  width: 100% !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+}
+
+.rdp-month {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.rdp-month_grid {
+  width: 100% !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+  min-width: 0 !important;
+}
+
+.rdp-day {
+  width: 100% !important;
+  padding: 2px 0 !important;
+  min-width: 0 !important;
+  height: auto !important;
+}
+
+.rdp-day_button {
+  width: var(--rdp-day-width) !important;
+  height: var(--rdp-day-height) !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto !important;
+  transition: all 0.2s ease;
+  font-size: 0.85rem !important;
+  min-width: 0 !important;
+  border-radius: 50% !important;
+}
+
+.rdp-day_button:hover:not([data-selected]) {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.rdp-day_button[data-selected] {
+  background-color: var(--rdp-accent-background-color) !important;
+  color: white !important;
+  border-radius: 50% !important;
+}
+
+.rdp-day_button:focus,
+.rdp-day_button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.rdp-today {
+  color: var(--color-primary) !important;
+  font-weight: 700 !important;
+}
+
+.rdp-day {
+  position: relative;
+  background-color: transparent !important;
+  height: 38px !important;
+  padding: 0 !important;
+}
+
+.rdp-day[data-selected]:not([data-range-start]):not([data-range-end])::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 38px;
+  transform: translateY(-50%);
+  background-color: rgba(29, 185, 84, 0.15);
+  z-index: 0;
+}
+
+.rdp-day[data-selected][data-range-start][data-range-end]::before {
+  border-radius: 19px;
+}
+
+.rdp-day[data-range-start]:not([data-range-end])::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: 0;
+  height: 38px;
+  transform: translateY(-50%);
+  background-color: rgba(29, 185, 84, 0.15);
+  border-top-left-radius: 19px !important;
+  border-bottom-left-radius: 19px !important;
+  z-index: 0;
+}
+
+.rdp-day[data-range-end]:not([data-range-start])::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 50%;
+  height: 38px;
+  transform: translateY(-50%);
+  background-color: rgba(29, 185, 84, 0.15);
+  border-top-right-radius: 19px !important;
+  border-bottom-right-radius: 19px !important;
+  z-index: 0;
+}
+
+.rdp-day[data-range-start][data-range-end]::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 38px;
+  height: 38px;
+  transform: translate(-50%, -50%);
+  background-color: rgba(29, 185, 84, 0.15);
+  border-radius: 50% !important;
+  z-index: 0;
+}
+
+.rdp-day {
+  height: 38px !important;
+  padding: 0 !important;
+  vertical-align: middle !important;
+  min-width: 0 !important;
+  position: relative;
+}
+
+.rdp-day_button {
+  position: relative;
+  z-index: 1;
+}
+
+.rdp-day_button[data-selected] {
+  background-color: var(--rdp-accent-background-color) !important;
+  color: white !important;
+  border-radius: 50% !important;
+}
+
+.rdp-caption_label {
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  color: var(--color-text-primary) !important;
+}
+
+.rdp-chevron {
+  fill: var(--color-text-secondary) !important;
+}
+
+.rdp-weekday {
+  color: var(--color-text-muted) !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  padding: 8px 0 !important;
+  min-width: 0 !important;
+}
+
+/* react-time-picker customization to match Input.tsx */
+.react-time-picker {
+  width: 100%;
+}
+
+.react-time-picker__wrapper {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 2px solid transparent !important;
+  border-radius: 0.5rem;
+  padding: 0 12px;
+  transition: all 0.2s ease-in;
+  color: white;
+  height: 44px; /* match standard input height */
+  display: flex;
+  align-items: center;
+}
+
+.react-time-picker__wrapper:hover,
+.react-time-picker__wrapper:focus-within {
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.react-time-picker__inputGroup {
+  display: flex;
+  align-items: center;
+  font-family: 'Gotham', sans-serif !important;
+  font-size: 0.875rem !important;
+}
+
+.react-time-picker__inputGroup__input {
+  color: white !important;
+  outline: none !important;
+  background: transparent !important;
+  font-family: inherit !important;
+  border: none !important;
+}
+
+.react-time-picker__inputGroup__input::placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.react-time-picker__inputGroup__divider {
+  color: rgba(255, 255, 255, 0.6);
+  padding: 0 2px;
+}
+
+.react-time-picker__button {
+  padding: 4px !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+.react-time-picker__button svg {
+  stroke: rgba(255, 255, 255, 0.6) !important;
+  width: 18px;
+  height: 18px;
+}
+
+.react-time-picker__button:hover svg {
+  stroke: white !important;
+}
+
+.react-time-picker__clock {
+  background-color: var(--color-bg-tertiary) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  margin-top: 8px;
+  padding: 10px;
+  z-index: 100;
+}
+
+.react-time-picker__clear-button {
+  display: none !important;
+}
+
+/* Base style for native time inputs if still used */
+input[type='time'] {
+  color-scheme: dark;
+  accent-color: var(--color-primary);
+}
+

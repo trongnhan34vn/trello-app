@@ -48,7 +48,7 @@ const Button = ({
       primary: "border border-primary text-primary hover:text-black hover:bg-primary",
       secondary:
         "border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-black",
-      disabled: "border border-gray-500 text-gray-500",
+      disabled: "border border-border text-text-secondary hover:bg-white/10 hover:text-white",
       danger:
         "border border-red-500 text-red-500 hover:bg-red-500 hover:text-black",
     },
@@ -68,7 +68,7 @@ const Button = ({
         ${variants[variant][color]}
         ${fullWidth ? "w-full" : ""}
         ${className}
-        cursor-pointer
+        ${disabled ? "cursor-not-allowed" : "cursor-pointer"}
       `}
       disabled={disabled || loading}
       {...props}

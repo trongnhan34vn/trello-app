@@ -3,7 +3,7 @@ import { FormProvider, useForm, type DefaultValues, type FieldValues } from 'rea
 interface IProps<T extends FieldValues> {
   defaultValues: DefaultValues<T>;
   children: any;
-  onSubmit: (data: T) => void;
+  onSubmit: (data: T, methods?: any) => void;
 }
 
 const Form = <T extends FieldValues>({ defaultValues, children, onSubmit }: IProps<T>) => {
@@ -15,11 +15,12 @@ const Form = <T extends FieldValues>({ defaultValues, children, onSubmit }: IPro
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit((data) => onSubmit(data, methods))}>
         {typeof children === 'function' ? children(methods) : children}
       </form>
     </FormProvider>
   );
 };
+
 
 export default Form;

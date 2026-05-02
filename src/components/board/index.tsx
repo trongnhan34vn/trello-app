@@ -84,14 +84,16 @@ const KanbanBoard = ({
   const listCreateDefaultValues: ListCreateForm = {
     name: '',
     boardId,
-    position: '',
+    position: null,
   };
 
   const handleCreateListSubmit = async (data: ListCreateForm) => {
     const refList = REAL_LISTS(lists);
     const lastPosition = refList?.[refList?.length - 1]?.position ?? null;
 
-    const newList = await onCreateList({ ...data, position: lastPosition });
+    const position = generateKeyBetween(lastPosition, null);
+
+    const newList = await onCreateList({ ...data, position: position });
     if (!newList) return;
 
     setLists((prev) => [...REAL_LISTS(prev), newList]);
@@ -122,16 +124,18 @@ const KanbanBoard = ({
   const cardCreateFormDefaultValues: CardCreateForm = {
     title: '',
     listId: '',
-    position: '',
+    position: null,
   };
 
   const handleSubmitCreateCard = async (data: CardCreateForm) => {
     const refCards = cards.filter((c) => c.listId === data.listId);
     const lastPosition = refCards?.[refCards?.length - 1]?.position ?? null;
 
+    const position = generateKeyBetween(lastPosition, null);
+
     const newCard = await onCreateCard({
       ...data,
-      position: lastPosition,
+      position: position,
     });
     if (!newCard) return;
 

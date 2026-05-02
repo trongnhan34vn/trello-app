@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useListImageQuery } from '../services/image.service';
-import PopoverBox, { PopoverAnchor } from '../components/PopoverBox';
-import { FaPlus } from 'react-icons/fa';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Workspace } from '../types/workspace.type';
-import type { Board } from '../types/board.type';
-import CreateBoardForm from '../forms/board/CreateBoardForm';
+import { FaPlus } from 'react-icons/fa';
+import PopoverBox, { PopoverAnchor, PopoverSize } from '../components/PopoverBox';
 import { BoardConst } from '../constants';
+import CreateBoardForm from '../forms/board/CreateBoardForm';
+import { useListImageQuery } from '../services/image.service';
+import type { Board } from '../types/board.type';
+import type { Workspace } from '../types/workspace.type';
 
 export const useBuildCarouselBoards = () => {
   const { t } = useTranslation();
@@ -39,7 +39,7 @@ export const useBuildCarouselBoards = () => {
               <p>{t('dashboard:content.create_board_btn')}</p>
             </div>
           </PopoverBox.Button>
-          <PopoverBox.Panel anchor={PopoverAnchor.RIGHT}>
+          <PopoverBox.Panel size={PopoverSize.LG} anchor={PopoverAnchor.RIGHT}>
             <PopoverBox.Header>{t('dashboard:board_create_form.title')}</PopoverBox.Header>
             <PopoverBox.Body>
               <CreateBoardForm defaultWorkspace={w} images={images} />

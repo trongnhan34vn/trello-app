@@ -6,6 +6,7 @@ export type Card = {
     startDate?: string;
     description?: string;
     position?: string;
+    completed?: boolean
 }
 
 export type CardCreateForm = Pick<Card, 'title' | 'listId' | 'position'>

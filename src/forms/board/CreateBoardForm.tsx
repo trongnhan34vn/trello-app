@@ -38,10 +38,6 @@ const CreateBoardForm = ({ images = [], defaultWorkspace }: IProps) => {
       return {...base, workspace: null}
     }
   }, [defaultWorkspace])
-  console.log(defaultWorkspace);
-  
-  console.log(defaultValues);
-  
 
   const [createBoard] = useCreateBoardMutation();
   const { handle } = useMutationHandler();

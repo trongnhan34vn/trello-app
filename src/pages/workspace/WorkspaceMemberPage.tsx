@@ -2,10 +2,9 @@ import { clsx } from 'clsx';
 import { useParams } from 'react-router-dom';
 import userImg from '../../assets/user.png';
 import Select from '../../components/Select';
+import { useGetRole } from '../../hooks/useGetRole';
 import WorkspaceLayout from '../../layouts/WorkspaceLayout';
-import { useListRoleQuery } from '../../services/role.service';
 import { useDetailWorkspaceQuery } from '../../services/workspace.service';
-import { useMemo } from 'react';
 
 const WorkspaceMemberPage = () => {
   const { id, index } = useParams();
@@ -14,14 +13,14 @@ const WorkspaceMemberPage = () => {
   const workspace = workspaceApiRes ? workspaceApiRes.data : null;
   const members = workspace?.members ?? [];
 
-  const { data: roleApiRes } = useListRoleQuery();
-  const roles = roleApiRes ? roleApiRes.data : [];
-  const roleOptions = useMemo(() => roles.map((r) => ({ label: r.name, value: r.id })), [roles]);
+  const { options: roleOptions } = useGetRole();
 
   const isReady = roleOptions.length > 0;
 
   return (
     <WorkspaceLayout
+      workspaceId={id}
+      workspaceMembers={members}
       title={'List workspace members'}
       index={index || '0'}
       name={workspace?.name || ''}
