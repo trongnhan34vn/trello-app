@@ -7,6 +7,7 @@ export enum HttpMethod {
   GET = 'GET',
   PUT = 'PUT',
   PATCH = 'PATCH',
+  DELETE = 'DELETE',
 }
 
 export const ReducerPath = {
@@ -24,65 +25,67 @@ export const AUTH_ENDPOINT = {
 
 export const USER_ENDPOINT = {
   ME: '/users/me',
-  LIST: 'users'
-}
+  LIST: 'users',
+};
 
 export const WORKSPACE_CATEGORY_ENDPOINT = {
-  LIST: '/workspace-categories'
-}
+  LIST: '/workspace-categories',
+};
 
 export const IMAGE_ENDPOINT = {
-  LIST: '/images'
-}
+  LIST: '/images',
+};
 
 export const ROLE_ENDPOINT = {
-  LIST: '/roles'
-}
+  LIST: '/roles',
+};
 
 export const WORKSPACE_ENDPOINT = {
   CREATE: '/workspaces',
   LIST: '/workspaces',
-  DETAIL: '/workspaces/:id'
-}
+  DETAIL: '/workspaces/:id',
+};
 
 export const BOARD_ENDPOINT = {
   CREATE: '/boards',
-  DETAIL: '/boards/:id'
-}
+  DETAIL: '/boards/:id',
+};
 
 export const LIST_ENDPOINT = {
   LIST: '/lists',
   CREATE: '/lists',
-  UPDATE: '/lists/:id'
-}
+  UPDATE: '/lists/:id',
+};
 
 export const CARD_ENDPOINT = {
   LIST: '/cards',
   CREATE: '/cards',
   UPDATE: '/cards/:id',
-  DETAIL: '/cards/:id'
-}
+  DETAIL: '/cards/:id',
+};
 
 export const BOARD_MEMBER_ENDPOINT = {
   LIST: '/board-members',
-  CREATE: '/board-members'
-}
+  CREATE: '/board-members',
+};
 
 export const WORKSPACE_MEMBER_ENDPOINT = {
-  CREATE: '/workspace-members'
-}
+  CREATE: '/workspace-members',
+};
 
 export const CHECKLIST_ENDPOINT = {
   LIST: '/checklists',
   CREATE: '/checklists',
-  UPDATE: '/checklists/:id'
-}
+  UPDATE: '/checklists/:id',
+  DELETE: '/checklists/:id',
+};
 
 export const CHECKLIST_ITEM_ENDPOINT = {
   LIST: '/checklist-items',
   CREATE: '/checklist-items',
-  UPDATE: '/checklist-items/:id'
-}
+  UPDATE: '/checklist-items/:id',
+  DELETE: '/checklist-items/:id',
+};
 
 export const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL + PREFIX_ENDPOINT,
@@ -91,7 +94,8 @@ export const baseQuery = fetchBaseQuery({
 
 const baseQueryWithReauth: BaseQueryFn = async (args, api, extraOptions) => {
   const result = await baseQuery(args, api, extraOptions);
-  const isConfirmEmailPage = window.location.pathname.includes('/confirm') || window.location.pathname == ('/');
+  const isConfirmEmailPage =
+    window.location.pathname.includes('/confirm') || window.location.pathname == '/';
 
   if (result.error?.status == 401 && !isConfirmEmailPage) {
     window.location.href = '/';
@@ -103,7 +107,17 @@ const baseQueryWithReauth: BaseQueryFn = async (args, api, extraOptions) => {
 export const baseApi = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Workspace', 'User', 'Auth', 'Board', 'List', 'Card', 'BoardMember', 'Checklist', 'ChecklistItem'],
+  tagTypes: [
+    'Workspace',
+    'User',
+    'Auth',
+    'Board',
+    'List',
+    'Card',
+    'BoardMember',
+    'Checklist',
+    'ChecklistItem',
+  ],
   endpoints: () => ({}), // empty base
 });
 
@@ -145,6 +159,6 @@ export const buildUrl = ({
 export const http = () => {
   return axios.create({
     baseURL: BASE_URL + PREFIX_ENDPOINT,
-    withCredentials: true
-  })
-}
+    withCredentials: true,
+  });
+};

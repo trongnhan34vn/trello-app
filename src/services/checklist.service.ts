@@ -9,7 +9,7 @@ export const checklistService = baseApi.injectEndpoints({
         url: buildUrl({ path: CHECKLIST_ENDPOINT.LIST, query: { cardId: params.cardId } }),
         method: HttpMethod.GET,
       }),
-      providesTags: ['Checklist']
+      providesTags: ['Checklist'],
     }),
     createChecklist: builder.mutation({
       query: (body) => ({
@@ -17,7 +17,7 @@ export const checklistService = baseApi.injectEndpoints({
         method: HttpMethod.POST,
         body,
       }),
-      invalidatesTags: ['Checklist']
+      invalidatesTags: ['Checklist'],
     }),
     updateChecklist: builder.mutation({
       query: (param) => ({
@@ -25,9 +25,22 @@ export const checklistService = baseApi.injectEndpoints({
         method: HttpMethod.PATCH,
         body: param,
       }),
+      invalidatesTags: ['Checklist'],
+    }),
+    deleteChecklist: builder.mutation({
+      query: (param) => ({
+        url: buildUrl({ path: CHECKLIST_ENDPOINT.DELETE, params: { id: param.id } }),
+        method: HttpMethod.DELETE,
+        body: param,
+      }),
+      invalidatesTags: ['Checklist'],
     }),
   }),
 });
 
-export const { useCreateChecklistMutation, useListChecklistQuery, useUpdateChecklistMutation } =
-  checklistService;
+export const {
+  useCreateChecklistMutation,
+  useDeleteChecklistMutation,
+  useListChecklistQuery,
+  useUpdateChecklistMutation,
+} = checklistService;

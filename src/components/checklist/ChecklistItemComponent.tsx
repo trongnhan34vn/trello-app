@@ -1,24 +1,26 @@
 import { Checkbox } from '@headlessui/react';
 import CheckIcon from '@heroicons/react/16/solid/CheckIcon';
+import clsx from 'clsx';
 import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { FaRegClock } from 'react-icons/fa6';
 import { MdDelete } from 'react-icons/md';
+import Form from '../../forms';
+import DeleteModal from '../../modals/DeleteModal';
 import type { ChecklistItem } from '../../types/checklist.item.type';
 import Button from '../Button';
-import { useEffect, useState } from 'react';
 import PopoverBox, { PopoverAnchor } from '../PopoverBox';
-import DatePickerField, { DayPickerMode } from '../form/DatePickerField';
-import { useFormContext, useWatch } from 'react-hook-form';
 import TimeValidationError from '../TimeValidationError';
+import DatePickerField, { DayPickerMode } from '../form/DatePickerField';
 import TextField from '../form/TextField';
 import TimePickerField from '../form/TimePickerField';
-import clsx from 'clsx';
-import Form from '../../forms';
 
 interface IProps {
   checklistItem: ChecklistItem;
   onUpdateCompletedStateChecklistItem: (value: any) => void;
   onUpdateDueDateChecklistItem: (value: any) => void;
+  onDeleteChecklistItem: (value: any) => void;
 }
 
 const DatePickerSync = () => {
@@ -40,7 +42,9 @@ const ChecklistItemComponent = ({
   checklistItem,
   onUpdateCompletedStateChecklistItem,
   onUpdateDueDateChecklistItem,
+  onDeleteChecklistItem
 }: IProps) => {
+  const [isOnDeleteChecklistItem, setOnDeleteChecklistItem] = useState(false);
   const isOverdue = checklistItem?.isCompleted
     ? false
     : new Date(checklistItem?.dueDate) < new Date();
@@ -70,7 +74,7 @@ const ChecklistItemComponent = ({
     const payload = {
       id: checklistItem?.id,
       dueDate: dayjs(`${data.to} ${data.toTime}`, 'DD/MM/YYYY HH:mm').format('YYYY/MM/DD HH:mm:ss'),
-      isCompleted: checklistItem?.isCompleted
+      isCompleted: checklistItem?.isCompleted,
     };
     onUpdateDueDateChecklistItem(payload);
     close();
@@ -165,14 +169,13 @@ const ChecklistItemComponent = ({
                                     },
                                   }}
                                 />
-
                               </div>
                             </div>
 
                             <Button
                               className="w-full mt-4"
                               type="submit"
-                            // onClick={close}
+                              // onClick={close}
                             >
                               Save
                             </Button>
@@ -187,6 +190,9 @@ const ChecklistItemComponent = ({
           </PopoverBox>
 
           <Button
+            onClick={() => {
+              setOnDeleteChecklistItem(true);
+            }}
             className="text-text-muted! hover:text-red-500! px-1!"
             variant="text"
             color="disabled"
@@ -195,6 +201,15 @@ const ChecklistItemComponent = ({
           </Button>
         </div>
       </div>
+      
+      <DeleteModal
+        onDelete={onDeleteChecklistItem}
+        open={isOnDeleteChecklistItem}
+        close={() => setOnDeleteChecklistItem(false)}
+        title={checklistItem.name}
+        type="item"
+        id={checklistItem.id}
+      />
     </div>
   );
 };

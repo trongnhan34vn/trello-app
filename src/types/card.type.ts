@@ -5,7 +5,7 @@ export type Card = {
     dueDate?: string;
     startDate?: string;
     description?: string;
-    position?: string;
+    position?: string | null;
     completed?: boolean
 }
 

@@ -18,8 +18,15 @@ export const checklistItemService = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Checklist'],
     }),
+    deleteChecklistItem: builder.mutation({
+      query: (param) => ({
+        url: buildUrl({ path: CHECKLIST_ITEM_ENDPOINT.DELETE, params: { id: param.id } }),
+        method: HttpMethod.DELETE,
+      }),
+      invalidatesTags: ['Checklist'],
+    }),
   }),
 });
 
-export const { useCreateChecklistItemMutation, useUpdateChecklistItemMutation } =
+export const { useCreateChecklistItemMutation, useDeleteChecklistItemMutation, useUpdateChecklistItemMutation } =
   checklistItemService;

@@ -24,6 +24,9 @@ interface IProps {
   onCreateChecklistItem: (data: any) => void;
   onUpdateCompletedStateChecklistItem: (value: any) => void;
   onUpdateDueDateChecklistItem: (payload: any) => void;
+  onUpdateChecklistName: (payload: any) => void;
+  onDeleteChecklistItem: (value: any) => void;
+  onDeleteChecklist: (payload: any) => void;
 }
 
 const DatePickerSync = () => {
@@ -45,10 +48,13 @@ const ChecklistComponent = ({
   checklist,
   onCreateChecklistItem,
   onUpdateCompletedStateChecklistItem,
-  onUpdateDueDateChecklistItem
+  onUpdateDueDateChecklistItem,
+  onUpdateChecklistName,
+  onDeleteChecklistItem,
+  onDeleteChecklist,
 }: IProps) => {
   if (!checklist) return;
-  const { name, checklistItems } = checklist;
+  const { checklistItems } = checklist;
 
   const getPercent = () => {
     if (checklistItems == null) return 0;
@@ -113,12 +119,17 @@ const ChecklistComponent = ({
 
   return (
     <div className="mb-8">
-      <ChecklistHeader title={name} />
+      <ChecklistHeader
+        onDeleteChecklist={onDeleteChecklist}
+        onUpdateChecklistName={onUpdateChecklistName}
+        checklist={checklist}
+      />
       <ProgressBar percent={getPercent()} />
       <div>
         {checklistItems.map((ci) => {
           return (
             <ChecklistItemComponent
+              onDeleteChecklistItem={onDeleteChecklistItem}
               onUpdateDueDateChecklistItem={onUpdateDueDateChecklistItem}
               onUpdateCompletedStateChecklistItem={onUpdateCompletedStateChecklistItem}
               key={ci?.id}
@@ -219,7 +230,6 @@ const ChecklistComponent = ({
                                                 return true;
                                               },
                                             }}
-
                                           />
                                         </div>
                                       </div>
@@ -255,7 +265,6 @@ const ChecklistComponent = ({
                 </>
               )}
             </Form>
-
           </div>
         ) : (
           <Button

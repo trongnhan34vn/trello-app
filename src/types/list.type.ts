@@ -4,7 +4,7 @@ export type List = {
     id: string;
     name: string;
     boardId?: string;
-    position?: string;
+    position?: string | null;
     cards?: Card[];
 }
 

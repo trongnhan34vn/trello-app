@@ -1,8 +1,7 @@
-import { Dialog, DialogBackdrop, DialogPanel, Transition } from '@headlessui/react';
-
+import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
 
 import { clsx } from 'clsx';
-import { Children, Fragment, isValidElement, type ReactNode } from 'react';
+import { Children, isValidElement, useEffect, type ReactNode } from 'react';
 import { FaXmark } from 'react-icons/fa6';
 
 export enum ModalSize {
@@ -41,48 +40,58 @@ const Modal = ({ open, onClose, children, size = ModalSize.MD, hasXMark, classNa
     if (child.type === Modal.Footer) footer = child;
   });
 
+  useEffect(() => {
+    if (!open && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }, [open]);
+
+  const handleClose = () => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    onClose();
+  };
+
   return (
-    <Transition show={open} as={Fragment}>
-      <Dialog
-        as="div"
-        className="relative max-h-5/6 text-white z-10 focus:outline-none"
-        onClose={onClose}
-      >
-        {/* overlay */}
-        <DialogBackdrop
-          transition
-          className="fixed inset-0 bg-black/20 backdrop-blur-xs transition duration-300 ease-out data-closed:opacity-0"
-        />
+    <Dialog
+      as="div"
+      className="relative max-h-5/6 text-white z-10 focus:outline-none"
+      onClose={handleClose}
+      open={open}
+    >
+      {/* overlay */}
+      <DialogBackdrop
+        transition
+        className="fixed inset-0 bg-black/20 backdrop-blur-xs transition duration-300 ease-out data-closed:opacity-0"
+      />
 
-        <div className={clsx(className, 'fixed z-10 top-0 bottom-0 left-0 right-0 w-screen')}>
-          <div className="flex min-h-full max-h-5/6 items-center justify-center p-4">
-            <DialogPanel
-              transition
-              className={clsx(
-                'w-full relative max-h-[90vh] flex flex-col rounded-xl p-4 bg-bg-secondary/80 backdrop-blur-xl duration-300 shadow-xl border border-white/10 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0',
-                sizeMap[size],
-              )}
-            >
-
-              {hasXMark && (
-                <div
-                  onClick={onClose}
-                  className="absolute top-2 right-2 text-text-secondary p-2 hover:text-white cursor-pointer transition-all duration-150 ease-in hover:bg-white/5 w-10 h-10 flex items-center justify-center rounded-full"
-                >
-                  <FaXmark />
-                </div>
-              )}
-              {header}
-              {body}
-              {footer}
-            </DialogPanel>
-          </div>
+      <div className={clsx(className, 'fixed z-10 top-0 bottom-0 left-0 right-0 w-screen')}>
+        <div className="flex min-h-full max-h-5/6 items-center justify-center p-4">
+          <DialogPanel
+            transition
+            className={clsx(
+              'w-full relative max-h-[90vh] flex flex-col rounded-xl p-4 bg-bg-secondary/80 backdrop-blur-xl duration-300 shadow-xl border border-white/10 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0',
+              sizeMap[size],
+            )}
+          >
+            {hasXMark && (
+              <div
+                onClick={onClose}
+                className="absolute top-2 right-2 text-text-secondary p-2 hover:text-white cursor-pointer transition-all duration-150 ease-in hover:bg-white/5 w-10 h-10 flex items-center justify-center rounded-full"
+              >
+                <FaXmark />
+              </div>
+            )}
+            {header}
+            {body}
+            {footer}
+          </DialogPanel>
         </div>
-      </Dialog>
-    </Transition>
+      </div>
+    </Dialog>
   );
 };
-
 
 export default Modal;
 
@@ -101,9 +110,17 @@ interface BodyProps {
 }
 
 Modal.Body = function Body({ children, className }: BodyProps) {
-  return <div className={clsx('text-sm text-gray-600 overflow-hidden flex-1 pr-2 custom-scrollbar', className)}>{children}</div>;
+  return (
+    <div
+      className={clsx(
+        'text-sm text-gray-600 overflow-hidden flex-1 pr-2 custom-scrollbar',
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
 };
-
 
 interface FooterProps {
   children: ReactNode;
