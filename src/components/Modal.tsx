@@ -1,10 +1,9 @@
-import { Dialog, DialogBackdrop, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
+import { Dialog, DialogBackdrop, DialogPanel, Transition } from '@headlessui/react';
 
 
 import { clsx } from 'clsx';
-import { Children, isValidElement, type ReactNode } from 'react';
+import { Children, Fragment, isValidElement, type ReactNode } from 'react';
 import { FaXmark } from 'react-icons/fa6';
-import { Fragment } from 'react';
 
 export enum ModalSize {
   SM = 'sm',
@@ -56,14 +55,15 @@ const Modal = ({ open, onClose, children, size = ModalSize.MD, hasXMark, classNa
         />
 
         <div className={clsx(className, 'fixed z-10 top-0 bottom-0 left-0 right-0 w-screen')}>
-          <div className="flex min-h-full items-center justify-center p-4">
+          <div className="flex min-h-full max-h-5/6 items-center justify-center p-4">
             <DialogPanel
               transition
               className={clsx(
-                'w-full relative rounded-xl p-4 bg-bg-secondary/80 backdrop-blur-xl duration-300 shadow-xl border border-white/10 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0',
+                'w-full relative max-h-[90vh] flex flex-col rounded-xl p-4 bg-bg-secondary/80 backdrop-blur-xl duration-300 shadow-xl border border-white/10 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0',
                 sizeMap[size],
               )}
             >
+
               {hasXMark && (
                 <div
                   onClick={onClose}
@@ -101,8 +101,9 @@ interface BodyProps {
 }
 
 Modal.Body = function Body({ children, className }: BodyProps) {
-  return <div className={clsx('text-sm text-gray-600', className)}>{children}</div>;
+  return <div className={clsx('text-sm text-gray-600 overflow-hidden flex-1 pr-2 custom-scrollbar', className)}>{children}</div>;
 };
+
 
 interface FooterProps {
   children: ReactNode;
