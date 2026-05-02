@@ -51,7 +51,8 @@ export const BOARD_ENDPOINT = {
 
 export const LIST_ENDPOINT = {
   LIST: '/lists',
-  CREATE: '/lists'
+  CREATE: '/lists',
+  UPDATE: '/lists/:id'
 }
 
 export const CARD_ENDPOINT = {

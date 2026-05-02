@@ -21,7 +21,7 @@ const WorkspaceLayout = ({ index, children, name, title, isWorkspaceMember = fal
       <div className="border border-border my-4" />
       <div>
         <div className="flex justify-between items-center mb-5">
-          <p className="text-text-secondary font-bold mb-4">{title}</p>
+          <p className="text-text-secondary font-bold">{title}</p>
           {isWorkspaceMember && (
             <Button onClick={() => setOpenInviteMemberModal(true)}>
               <MdGroupAdd size={18} />
@@ -38,7 +38,7 @@ const WorkspaceLayout = ({ index, children, name, title, isWorkspaceMember = fal
       >
         <Modal.Header>Invite Member</Modal.Header>
         <Modal.Body>
-          <Form defaultValues={{}} onSubmit={() => {}}>
+          <Form defaultValues={{}} onSubmit={() => { }}>
             <div className="w-full flex gap-2">
               <div className="flex-1">
                 <Select isMulti isSearchable name="member" options={async () => []} />

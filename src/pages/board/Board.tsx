@@ -17,9 +17,9 @@ import {
   useCreateCardMutation,
   useUpdateCardMutation,
 } from '../../services/card.service';
-import { useListListQuery, useCreateListMutation } from '../../services/list.service';
+import { useListListQuery, useCreateListMutation, useUpdateListMutation } from '../../services/list.service';
 import type { CardCreateForm, DragUpdateCard } from '../../types/card.type';
-import type { ListCreateForm } from '../../types/list.type';
+import type { DragUpdateList, ListCreateForm } from '../../types/list.type';
 import type { Card } from '../../types/card.type';
 import type { List } from '../../types/list.type';
 import type { ErrorResponse, SuccessResponse } from '../../types/api.type';
@@ -59,6 +59,7 @@ const Board = () => {
   const [createList] = useCreateListMutation();
   const [createCard] = useCreateCardMutation();
   const [updateCard] = useUpdateCardMutation();
+  const [updateList] = useUpdateListMutation();
 
   const handleCreateList = async (payload: ListCreateForm): Promise<List | null> => {
     let result: List | null = null;
@@ -96,6 +97,12 @@ const Board = () => {
 
   const handleAsyncDragCard = async (payload: DragUpdateCard) => {
     await handle(() => updateCard(payload), {
+      hasLoading: false,
+    });
+  };
+
+  const handleAsyncDragList = async (payload: DragUpdateList) => {
+    await handle(() => updateList(payload), {
       hasLoading: false,
     });
   };
@@ -138,6 +145,7 @@ const Board = () => {
           onCreateList={handleCreateList}
           onCreateCard={handleCreateCard}
           onDragCard={handleAsyncDragCard}
+          onDragList={handleAsyncDragList}
         />
       </div>
       {/* Modal */}
@@ -148,7 +156,7 @@ const Board = () => {
       >
         <Modal.Header>Invite Member</Modal.Header>
         <Modal.Body>
-          <Form defaultValues={{}} onSubmit={() => {}}>
+          <Form defaultValues={{}} onSubmit={() => { }}>
             <div className="w-full flex gap-2">
               <div className="flex-1">
                 <Select isMulti isSearchable name="member" options={async () => []} />
