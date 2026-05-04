@@ -7,8 +7,8 @@ import { MdDelete } from 'react-icons/md';
 import 'react-quill/dist/quill.snow.css';
 import { CardConst } from '../../constants';
 import CreateCardForm from '../../forms/card/CreateCardForm';
-import DeleteCardModal from '../../modals/card/DeleteCardModal';
 import DetailCardModal from '../../modals/card/DetailCardModal';
+import DeleteModal from '../../modals/DeleteModal';
 import type { CardCreateForm } from '../../types/card.type';
 import Dropdown, { DropdownAnchor, DropdownMenuSize } from '../Dropdown';
 
@@ -23,6 +23,7 @@ interface IProps {
   onCloseCreateCardForm: (listId: string) => void;
   cardCreateFormDefaultValues: CardCreateForm;
   onSubmitCreateCard: (data: CardCreateForm) => void;
+  onDeleteCard: (payload: any) => void;
 }
 export function Item({
   id,
@@ -35,6 +36,7 @@ export function Item({
   listId,
   cardCreateFormDefaultValues,
   onSubmitCreateCard,
+  onDeleteCard
 }: IProps) {
   const { ref, isDragging } = useSortable({
     id,
@@ -72,7 +74,7 @@ export function Item({
   // ~~~ Handle Edit Item ~~~
   const [isOnDelete, setOnDelete] = useState(false);
   const [isOnDetail, setOnDetail] = useState(false);
-  
+
   return (
     <>
       <div
@@ -107,8 +109,15 @@ export function Item({
       </div>
 
       {/* ~~~ Modal Delete Item ~~~ */}
-      <DeleteCardModal open={isOnDelete} close={() => setOnDelete(false)} id={id} title={title} />
-
+      {/* <DeleteCardModal open={isOnDelete} close={() => setOnDelete(false)} id={id} title={title} /> */}
+      <DeleteModal
+        open={isOnDelete}
+        close={() => setOnDelete(false)}
+        type="card"
+        title={title}
+        onDelete={onDeleteCard}
+        id={id}
+      />
       {/* ~~~ Modal Detail Item ~~~ */}
       <DetailCardModal open={isOnDetail} id={id} title={title} close={() => setOnDetail(false)} />
     </>

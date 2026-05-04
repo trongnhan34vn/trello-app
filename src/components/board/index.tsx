@@ -15,6 +15,8 @@ interface IProps {
   onCreateCard: (payload: CardCreateForm) => Promise<Card | null>;
   onDragCard: (payload: DragUpdateCard) => void;
   onDragList: (payload: DragUpdateList) => void;
+  onDeleteList: (payload: any) => void;
+  onDeleteCard: (payload: any) => void;
 }
 
 const KanbanBoard = ({
@@ -25,6 +27,8 @@ const KanbanBoard = ({
   onCreateCard,
   onDragCard,
   onDragList,
+  onDeleteCard,
+  onDeleteList
 }: IProps) => {
   const defaultList = {
     id: ListConst.DEFAULT_ID,
@@ -382,6 +386,7 @@ const KanbanBoard = ({
             column === ListConst.DEFAULT_ID ? defaultList : lists.find((l) => l.id == column);
           return (
             <Column
+              onDeleteList={onDeleteList}
               boardId={boardId || ''}
               isOpenCreateListForm={isOpenCreateListForm}
               onCloseCreateListForm={() => setOpenCreateListForm(false)}
@@ -396,6 +401,7 @@ const KanbanBoard = ({
               {column !== ListConst.DEFAULT_ID &&
                 getCardsByList(list?.id ?? '').map((card, cardIndex) => (
                   <Item
+                    onDeleteCard={onDeleteCard}
                     title={card.title}
                     key={card.id}
                     listId={list?.id ?? ''}

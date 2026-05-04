@@ -16,6 +16,7 @@ import Button from '../Button';
 import Dropdown, { DropdownAnchor, DropdownMenuSize } from '../Dropdown';
 import TextField from '../form/TextField';
 import Modal from '../Modal';
+import DeleteModal from '../../modals/DeleteModal';
 
 interface IProps {
   id: any;
@@ -28,6 +29,7 @@ interface IProps {
   isOpenCreateListForm: boolean;
   onOpenCreateListForm: () => void;
   onCloseCreateListForm: () => void;
+  onDeleteList: (payload: any) => void;
 }
 const Column = ({
   id,
@@ -40,6 +42,7 @@ const Column = ({
   isOpenCreateListForm,
   onOpenCreateListForm,
   onCloseCreateListForm,
+  onDeleteList
 }: IProps) => {
   const { ref: dropRef } = useDroppable({
     id,
@@ -151,33 +154,14 @@ const Column = ({
       <div ref={itemDropZoneRef} className="flex flex-col gap-2 overflow-y-auto pr-1 max-h-104">
         {children}
       </div>
-      <Modal open={isOnDelete} onClose={() => setOnDelete(false)}>
-        <Modal.Header>Delete list {title}?</Modal.Header>
-        <Modal.Body>
-          <Form defaultValues={{}} onSubmit={() => { }}>
-            <p className="text-white/80 mb-1">
-              Are you sure you want to delete list {title}? This action cannot be undone.
-            </p>
-            <p className="text-white/80 mb-2">
-              Please enter <strong className="text-red-500">{title}</strong> to confirm:
-            </p>
-            <TextField name="delete" />
-            <div className="flex items-center float-right gap-2">
-              <Button type="submit" variant="contained" color="danger">
-                Delete
-              </Button>
-              <Button
-                type="button"
-                className="text-text-secondary"
-                variant="text"
-                onClick={() => setOnDelete(false)}
-              >
-                Cancel
-              </Button>
-            </div>
-          </Form>
-        </Modal.Body>
-      </Modal>
+      <DeleteModal 
+        id={id}
+        title={title}
+        open={isOnDelete}
+        close={() => setOnDelete(false)}
+        onDelete={onDeleteList}
+        type='list'
+      />
     </div>
   );
 };

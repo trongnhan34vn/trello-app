@@ -9,6 +9,7 @@ export const listService = baseApi.injectEndpoints({
         url: buildUrl({ path: LIST_ENDPOINT.LIST, query: { boardId: params } }),
         method: HttpMethod.GET,
       }),
+      providesTags: ['List'],
     }),
     createList: builder.mutation({
       query: (body) => ({
@@ -24,7 +25,19 @@ export const listService = baseApi.injectEndpoints({
         body,
       }),
     }),
+    deleteList: builder.mutation({
+      query: (body) => ({
+        url: buildUrl({ path: LIST_ENDPOINT.UPDATE, params: { id: body.id } }),
+        method: HttpMethod.DELETE,
+      }),
+      invalidatesTags: ['List'],
+    }),
   }),
 });
 
-export const { useListListQuery, useCreateListMutation, useUpdateListMutation } = listService;
+export const {
+  useListListQuery,
+  useCreateListMutation,
+  useUpdateListMutation,
+  useDeleteListMutation,
+} = listService;

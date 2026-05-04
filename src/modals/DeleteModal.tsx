@@ -17,6 +17,7 @@ const DeleteModal = ({ id, title, open, close, type, onDelete }: IProps) => {
       id
     }
     onDelete(payload);
+    close();
   }
   return (
     <Modal open={open} onClose={close}>

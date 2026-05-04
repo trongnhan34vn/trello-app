@@ -13,17 +13,20 @@ import { useListBoardMemberQuery } from '../../services/board.member.service';
 import { useDetailBoardQuery } from '../../services/board.service';
 import {
   useCreateCardMutation,
+  useDeleteCardMutation,
   useListCardQuery,
   useUpdateCardMutation,
 } from '../../services/card.service';
 import {
   useCreateListMutation,
+  useDeleteListMutation,
   useListListQuery,
   useUpdateListMutation,
 } from '../../services/list.service';
 import type { ErrorResponse, SuccessResponse } from '../../types/api.type';
 import type { Card, CardCreateForm, DragUpdateCard } from '../../types/card.type';
 import type { DragUpdateList, List, ListCreateForm } from '../../types/list.type';
+import UserHoverCard from '../../components/board/UserHoverCard';
 
 const Board = () => {
   const { id } = useParams();
@@ -61,6 +64,8 @@ const Board = () => {
   const [createCard] = useCreateCardMutation();
   const [updateCard] = useUpdateCardMutation();
   const [updateList] = useUpdateListMutation();
+  const [deleteCard] = useDeleteCardMutation();
+  const [deleteList] = useDeleteListMutation();
 
   const { data: resBoardMember } = useListBoardMemberQuery(
     { boardId: board?.id || '' },
@@ -70,7 +75,7 @@ const Board = () => {
   );
 
   const boardMembers = resBoardMember ? resBoardMember.data : [];
-  
+
   const handleCreateList = async (payload: ListCreateForm): Promise<List | null> => {
     let result: List | null = null;
 
@@ -117,6 +122,30 @@ const Board = () => {
     });
   };
 
+  const handleDeleteCard = (payload: any) => {
+    handle(() => deleteCard(payload), {
+      hasLoading: false,
+      onSuccess: (data: any) => {
+        toast.success(data.message);
+      },
+      onError: (error: any) => {
+        toast.error(error.message);
+      },
+    });
+  };
+
+  const handleDeleteList = (payload: any) => {
+    handle(() => deleteList(payload), {
+      hasLoading: false,
+      onSuccess: (data: any) => {
+        toast.success(data.message);
+      },
+      onError: (error: any) => {
+        toast.error(error.message);
+      },
+    });
+  };
+
   return (
     <div
       style={{
@@ -133,12 +162,13 @@ const Board = () => {
         <div className="flex items-center gap-5">
           {/* List user */}
           <div className="flex">
-            <div className="w-9 h-9 rounded-full">
-              <img className="w-full h-full" src={userImg} alt="" />
-            </div>
-            <div className="-ml-1 w-9 h-9 rounded-full">
-              <img className="w-full h-full" src={userImg} alt="" />
-            </div>
+            {boardMembers.map((bm) => (
+              <UserHoverCard key={bm.id} member={bm}>
+                <div className="w-10 h-10 rounded-full overflow-hidden cursor-pointer border-2 border-transparent hover:border-primary transition-all duration-150">
+                  <img className="w-full h-full object-cover" src={bm.avatarUrl || userImg} alt="" />
+                </div>
+              </UserHoverCard>
+            ))}
           </div>
           <Button onClick={() => setOpenInviteMemberModal(true)}>
             <MdGroupAdd size={18} />
@@ -156,6 +186,8 @@ const Board = () => {
           onCreateCard={handleCreateCard}
           onDragCard={handleAsyncDragCard}
           onDragList={handleAsyncDragList}
+          onDeleteCard={handleDeleteCard}
+          onDeleteList={handleDeleteList}
         />
       </div>
       {/* Modal */}
