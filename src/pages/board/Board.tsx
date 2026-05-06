@@ -16,6 +16,7 @@ import {
   useDeleteCardMutation,
   useListCardQuery,
   useUpdateCardMutation,
+  useUpdatePosCardMutation,
 } from '../../services/card.service';
 import {
   useCreateListMutation,
@@ -63,6 +64,7 @@ const Board = () => {
   const [createList] = useCreateListMutation();
   const [createCard] = useCreateCardMutation();
   const [updateCard] = useUpdateCardMutation();
+  const [updatePosCard] = useUpdatePosCardMutation();
   const [updateList] = useUpdateListMutation();
   const [deleteCard] = useDeleteCardMutation();
   const [deleteList] = useDeleteListMutation();
@@ -111,7 +113,7 @@ const Board = () => {
   };
 
   const handleAsyncDragCard = async (payload: DragUpdateCard) => {
-    await handle(() => updateCard(payload), {
+    await handle(() => updatePosCard(payload), {
       hasLoading: false,
     });
   };

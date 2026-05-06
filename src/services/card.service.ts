@@ -41,6 +41,13 @@ export const cardService = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Card'],
     }),
+    updatePosCard: builder.mutation({
+      query: (param) => ({
+        url: buildUrl({ path: CARD_ENDPOINT.UPDATE, params: { id: param.id } }),
+        method: HttpMethod.PATCH,
+        body: param,
+      }),
+    }),
   }),
 });
 
@@ -49,5 +56,6 @@ export const {
   useCreateCardMutation,
   useUpdateCardMutation,
   useDetailCardQuery,
-  useDeleteCardMutation
+  useDeleteCardMutation,
+  useUpdatePosCardMutation,
 } = cardService;

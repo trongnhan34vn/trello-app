@@ -11,12 +11,11 @@ import { MdDelete } from 'react-icons/md';
 import { ListConst } from '../../constants';
 import Form from '../../forms';
 import CreateListForm from '../../forms/list/CreateListForm';
+import DeleteModal from '../../modals/DeleteModal';
 import type { ListCreateForm } from '../../types/list.type';
 import Button from '../Button';
 import Dropdown, { DropdownAnchor, DropdownMenuSize } from '../Dropdown';
 import TextField from '../form/TextField';
-import Modal from '../Modal';
-import DeleteModal from '../../modals/DeleteModal';
 
 interface IProps {
   id: any;
@@ -51,7 +50,7 @@ const Column = ({
     collisionPriority: CollisionPriority.Low,
   });
 
-  const { ref: sortRef } = useSortable({
+  const { ref: sortRef, isDragging } = useSortable({
     id,
     index,
     type: 'column',
@@ -70,27 +69,22 @@ const Column = ({
     sortRef(el);
   };
 
-  const baseColumnClass = 'bg-bg-surface flex shrink-0 flex-col gap-2 rounded-lg p-3';
-  const baseDefaultColumnClass =
-    'bg-bg-surface flex h-fit min-h-12 w-[280px] shrink-0 items-center gap-2 rounded-lg p-3 transition-all duration-150 ease-in';
+  const baseColumnClass = 'trello-column flex shrink-0 flex-col p-3';
 
   if (id == ListConst.DEFAULT_ID) {
     if (!isOpenCreateListForm)
       return (
         <div
           onClick={onOpenCreateListForm}
-          className={clsx(
-            baseDefaultColumnClass,
-            'cursor-pointer text-text-secondary hover:bg-bg-card hover:text-white',
-          )}
+          className="trello-column hover:bg-white/10 cursor-pointer flex h-fit min-h-12 w-[280px] shrink-0 items-center gap-2 p-3 transition-all duration-150 ease-in text-text-secondary hover:text-white"
         >
-          <FaPlus />
-          <div className="font-semibold text-sm">{title}</div>
+          <FaPlus className="text-xs" />
+          <div className="font-bold text-sm">{title}</div>
         </div>
       );
 
     return (
-      <div className={clsx(baseDefaultColumnClass, 'w-[280px]')}>
+      <div className="trello-column flex h-fit min-h-12 w-[280px] shrink-0 items-center gap-2 p-3 transition-all duration-150 ease-in">
         <div className="w-full relative">
           <CreateListForm
             boardId={boardId}
@@ -108,9 +102,16 @@ const Column = ({
   const [isOnDelete, setOnDelete] = useState(false);
 
   return (
-    <div ref={setRef} className={clsx(baseColumnClass, 'h-fit min-h-0 w-[280px]')}>
-      <div className="font-semibold w-full gap-4 text-base mb-2 flex items-center justify-between">
-        <div className="w-full">
+    <div
+      ref={setRef}
+      className={clsx(
+        baseColumnClass,
+        'h-fit min-h-0 w-[280px]',
+        isDragging && 'opacity-50 grayscale-[50%] bg-black/40',
+      )}
+    >
+      <div className="w-full px-1 py-1 flex items-center justify-between mb-1">
+        <div className="w-full flex items-center">
           {isOnRename ? (
             <div className="relative w-full">
               <Form defaultValues={{ rename: title }} onSubmit={() => { }}>
@@ -128,7 +129,9 @@ const Column = ({
               </Form>
             </div>
           ) : (
-            <span>{title}</span>
+            <span className="text-sm font-bold text-text-primary px-2 py-1 leading-6 cursor-pointer">
+              {title}
+            </span>
           )}
         </div>
         <Dropdown>
@@ -154,7 +157,7 @@ const Column = ({
       <div ref={itemDropZoneRef} className="flex flex-col gap-2 overflow-y-auto pr-1 max-h-104">
         {children}
       </div>
-      <DeleteModal 
+      <DeleteModal
         id={id}
         title={title}
         open={isOnDelete}

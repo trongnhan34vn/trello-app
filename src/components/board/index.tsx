@@ -1,4 +1,4 @@
-import { DragDropProvider } from '@dnd-kit/react';
+import { DragDropProvider, DragOverlay } from '@dnd-kit/react';
 import { useEffect, useRef, useState } from 'react';
 import { generateKeyBetween } from 'fractional-indexing';
 import { CardConst, ListConst } from '../../constants';
@@ -378,8 +378,19 @@ const KanbanBoard = ({
     }
   };
 
+  const [activeId, setActiveId] = useState<string | null>(null);
+
   return (
-    <DragDropProvider onDragStart={() => { }} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
+    <DragDropProvider
+      onDragStart={(event) => {
+        setActiveId(event.operation.source?.id as string);
+      }}
+      onDragOver={handleDragOver}
+      onDragEnd={(event) => {
+        handleDragEnd(event);
+        setActiveId(null);
+      }}
+    >
       <div className="inline-flex h-full w-max min-w-0 max-w-none flex-nowrap items-stretch gap-4 p-2">
         {getRenderColumnOrder(columnOrder).map((column, columnIndex) => {
           const list =
@@ -419,6 +430,29 @@ const KanbanBoard = ({
           );
         })}
       </div>
+      <DragOverlay>
+        {activeId ? (
+          (() => {
+            const card = cards.find((c) => c.id === activeId);
+            if (card) {
+              return (
+                <div className="trello-card trello-drag-overlay px-3.5 py-2 text-sm font-medium w-[256px]">
+                  {card.title}
+                </div>
+              );
+            }
+            const list = lists.find((l) => l.id === activeId);
+            if (list) {
+              return (
+                <div className="trello-column trello-drag-overlay p-3 w-[280px] h-fit">
+                  <div className="font-semibold mb-2">{list.name}</div>
+                </div>
+              );
+            }
+            return null;
+          })()
+        ) : null}
+      </DragOverlay>
     </DragDropProvider>
   );
 };
