@@ -28,7 +28,7 @@ const KanbanBoard = ({
   onDragCard,
   onDragList,
   onDeleteCard,
-  onDeleteList
+  onDeleteList,
 }: IProps) => {
   const defaultList = {
     id: ListConst.DEFAULT_ID,
@@ -174,17 +174,31 @@ const KanbanBoard = ({
     // 2. Hovering over a specific Item
     if (target.type === 'item') {
       const targetId = target.id as string;
+
       if (isDefaultCardId(targetId)) {
         const listId = targetId.replace(`${CardConst.DEFAULT_ID}_`, '');
-        return { targetListId: listId, targetIndex: null };
+        return {
+          targetListId: listId,
+          targetIndex: null,
+        };
       }
 
       const targetCard = current.find((c) => c.id === targetId);
+
       if (!targetCard?.listId) return null;
 
-      // Use the index provided by @dnd-kit if available, otherwise fallback to finding it
-      const index = typeof target.index === 'number' ? target.index : null;
-      return { targetListId: targetCard.listId, targetIndex: index };
+      // IMPORTANT:
+      // derive index from CURRENT STATE
+      const targetCards = current
+        .filter((c) => c.listId === targetCard.listId && !isDefaultCardId(c.id))
+        .sort(byPosition);
+
+      const index = targetCards.findIndex((c) => c.id === targetId);
+
+      return {
+        targetListId: targetCard.listId,
+        targetIndex: index >= 0 ? index : null,
+      };
     }
 
     // 3. Hovering over the Column background (Low Priority)
@@ -241,22 +255,34 @@ const KanbanBoard = ({
 
     // Build the new list order for the target column
     const withoutDragged = current.filter((c) => c.id !== draggedId);
-    const targetListCards = withoutDragged
-      .filter((c) => c.listId === targetListId && !isDefaultCardId(c.id))
-      .sort(byPosition);
 
-    const insertIdx = targetIndex !== null ? Math.max(0, targetIndex) : targetListCards.length;
+    const targetCards = withoutDragged.filter((c) => c.listId === targetListId).sort(byPosition);
 
-    const movedCard: Card = { ...draggedCard, listId: targetListId };
-    const newTargetCards = [
-      ...targetListCards.slice(0, insertIdx),
-      movedCard,
-      ...targetListCards.slice(insertIdx),
-    ];
+    const insertIdx = targetIndex !== null ? Math.max(0, targetIndex) : targetCards.length;
+
+    const currentIndex = current
+      .filter((c) => c.listId === draggedCard.listId)
+      .sort(byPosition)
+      .findIndex((c) => c.id === draggedId);
+
+    if (draggedCard.listId === targetListId && currentIndex === insertIdx) {
+      return;
+    }
+
+    const before = targetCards[insertIdx - 1]?.position ?? null;
+    const after = targetCards[insertIdx]?.position ?? null;
+
+    const movedCard: Card = {
+      ...draggedCard,
+      listId: targetListId,
+      position: generateKeyBetween(before, after),
+    };
+
+    targetCards.splice(insertIdx, 0, movedCard);
 
     const updatedCards = [
-      ...withoutDragged.filter((c) => c.listId !== targetListId || isDefaultCardId(c.id)),
-      ...newTargetCards,
+      ...withoutDragged.filter((c) => c.listId !== targetListId),
+      ...targetCards,
     ];
 
     cardsRef.current = updatedCards;
@@ -431,8 +457,8 @@ const KanbanBoard = ({
         })}
       </div>
       <DragOverlay>
-        {activeId ? (
-          (() => {
+        {activeId
+          ? (() => {
             const card = cards.find((c) => c.id === activeId);
             if (card) {
               return (
@@ -451,7 +477,7 @@ const KanbanBoard = ({
             }
             return null;
           })()
-        ) : null}
+          : null}
       </DragOverlay>
     </DragDropProvider>
   );
