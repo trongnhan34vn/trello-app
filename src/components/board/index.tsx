@@ -243,34 +243,55 @@ const KanbanBoard = ({
     if (source.type !== 'item') return;
 
     const draggedId = source.id as string;
-    if (isDefaultCardId(draggedId)) return; // never move the placeholder
 
-    const current = cardsRef.current;
-    const draggedCard = current.find((c) => c.id === draggedId);
-    if (!draggedCard) return;
+    if (isDefaultCardId(draggedId)) return;
+
+    const current = [...cardsRef.current];
+
+    const draggedIndex = current.findIndex((c) => c.id === draggedId);
+
+    if (draggedIndex === -1) return;
+
+    const draggedCard = current[draggedIndex];
 
     const resolved = resolveTarget(target, current, draggedId);
+
     if (!resolved) return;
+
     const { targetListId, targetIndex } = resolved;
 
-    // Build the new list order for the target column
-    const withoutDragged = current.filter((c) => c.id !== draggedId);
+    // remove dragged card first
+    current.splice(draggedIndex, 1);
 
-    const targetCards = withoutDragged.filter((c) => c.listId === targetListId).sort(byPosition);
+    // cards of target list AFTER removal
+    const targetCards = current.filter((c) => c.listId === targetListId).sort(byPosition);
 
-    const insertIdx = targetIndex !== null ? Math.max(0, targetIndex) : targetCards.length;
+    // calculate insert position
+    let insertIndex = targetIndex !== null ? targetIndex : targetCards.length;
 
-    const currentIndex = current
-      .filter((c) => c.listId === draggedCard.listId)
-      .sort(byPosition)
-      .findIndex((c) => c.id === draggedId);
+    // normalize insert index
+    insertIndex = Math.max(0, Math.min(insertIndex, targetCards.length));
 
-    if (draggedCard.listId === targetListId && currentIndex === insertIdx) {
-      return;
+    // anti-loop guard
+    const sameList = draggedCard.listId === targetListId;
+
+    if (sameList) {
+      const oldIndex = cardsRef.current
+        .filter((c) => c.listId === targetListId)
+        .sort(byPosition)
+        .findIndex((c) => c.id === draggedId);
+
+      const normalizedInsert = oldIndex < insertIndex ? insertIndex - 1 : insertIndex;
+
+      if (oldIndex === normalizedInsert) {
+        return;
+      }
     }
 
-    const before = targetCards[insertIdx - 1]?.position ?? null;
-    const after = targetCards[insertIdx]?.position ?? null;
+    // calculate optimistic position
+    const before = targetCards[insertIndex - 1]?.position ?? null;
+
+    const after = targetCards[insertIndex]?.position ?? null;
 
     const movedCard: Card = {
       ...draggedCard,
@@ -278,15 +299,21 @@ const KanbanBoard = ({
       position: generateKeyBetween(before, after),
     };
 
-    targetCards.splice(insertIdx, 0, movedCard);
+    // find actual global insert position
+    const globalInsertIndex = current.findIndex((c, idx) => {
+      const listCardsBefore = current.slice(0, idx).filter((x) => x.listId === targetListId);
 
-    const updatedCards = [
-      ...withoutDragged.filter((c) => c.listId !== targetListId),
-      ...targetCards,
-    ];
+      return listCardsBefore.length === insertIndex;
+    });
 
-    cardsRef.current = updatedCards;
-    setCards(updatedCards);
+    if (globalInsertIndex === -1) {
+      current.push(movedCard);
+    } else {
+      current.splice(globalInsertIndex, 0, movedCard);
+    }
+
+    cardsRef.current = current;
+    setCards(current);
   };
 
   /**
