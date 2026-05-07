@@ -110,7 +110,7 @@ const Column = ({
         isDragging && 'opacity-50 grayscale-[50%] bg-black/40',
       )}
     >
-      <div className="w-full px-1 py-1 flex items-center justify-between mb-1">
+      <div className="w-full py-1 flex items-center justify-between mb-2">
         <div className="w-full flex items-center">
           {isOnRename ? (
             <div className="relative w-full">
