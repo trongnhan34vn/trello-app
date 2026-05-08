@@ -11,11 +11,11 @@ import { MdDelete } from 'react-icons/md';
 import { ListConst } from '../../constants';
 import Form from '../../forms';
 import CreateListForm from '../../forms/list/CreateListForm';
+import DeleteModal from '../../modals/DeleteModal';
 import type { ListCreateForm } from '../../types/list.type';
 import Button from '../Button';
 import Dropdown, { DropdownAnchor, DropdownMenuSize } from '../Dropdown';
 import TextField from '../form/TextField';
-import Modal from '../Modal';
 
 interface IProps {
   id: any;
@@ -28,6 +28,7 @@ interface IProps {
   isOpenCreateListForm: boolean;
   onOpenCreateListForm: () => void;
   onCloseCreateListForm: () => void;
+  onDeleteList: (payload: any) => void;
 }
 const Column = ({
   id,
@@ -40,6 +41,7 @@ const Column = ({
   isOpenCreateListForm,
   onOpenCreateListForm,
   onCloseCreateListForm,
+  onDeleteList
 }: IProps) => {
   const { ref: dropRef } = useDroppable({
     id,
@@ -48,7 +50,7 @@ const Column = ({
     collisionPriority: CollisionPriority.Low,
   });
 
-  const { ref: sortRef } = useSortable({
+  const { ref: sortRef, isDragging } = useSortable({
     id,
     index,
     type: 'column',
@@ -67,27 +69,22 @@ const Column = ({
     sortRef(el);
   };
 
-  const baseColumnClass = 'bg-bg-surface flex shrink-0 flex-col gap-2 rounded-lg p-3';
-  const baseDefaultColumnClass =
-    'bg-bg-surface flex h-fit min-h-12 w-[280px] shrink-0 items-center gap-2 rounded-lg p-3 transition-all duration-150 ease-in';
+  const baseColumnClass = 'trello-column flex shrink-0 flex-col p-3';
 
   if (id == ListConst.DEFAULT_ID) {
     if (!isOpenCreateListForm)
       return (
         <div
           onClick={onOpenCreateListForm}
-          className={clsx(
-            baseDefaultColumnClass,
-            'cursor-pointer text-text-secondary hover:bg-bg-card hover:text-white',
-          )}
+          className="trello-column hover:bg-white/10 cursor-pointer flex h-fit min-h-12 w-[280px] shrink-0 items-center gap-2 p-3 transition-all duration-150 ease-in text-text-secondary hover:text-white"
         >
-          <FaPlus />
-          <div className="font-semibold text-sm">{title}</div>
+          <FaPlus className="text-xs" />
+          <div className="font-bold text-sm">{title}</div>
         </div>
       );
 
     return (
-      <div className={clsx(baseDefaultColumnClass, 'w-[280px]')}>
+      <div className="trello-column flex h-fit min-h-12 w-[280px] shrink-0 items-center gap-2 p-3 transition-all duration-150 ease-in">
         <div className="w-full relative">
           <CreateListForm
             boardId={boardId}
@@ -105,9 +102,16 @@ const Column = ({
   const [isOnDelete, setOnDelete] = useState(false);
 
   return (
-    <div ref={setRef} className={clsx(baseColumnClass, 'h-fit min-h-0 w-[280px]')}>
-      <div className="font-semibold w-full gap-4 text-base mb-2 flex items-center justify-between">
-        <div className="w-full">
+    <div
+      ref={setRef}
+      className={clsx(
+        baseColumnClass,
+        'h-fit min-h-0 w-[280px]',
+        isDragging && 'opacity-50 grayscale-[50%] bg-black/40',
+      )}
+    >
+      <div className="w-full py-1 flex items-center justify-between mb-2">
+        <div className="w-full flex items-center">
           {isOnRename ? (
             <div className="relative w-full">
               <Form defaultValues={{ rename: title }} onSubmit={() => { }}>
@@ -125,7 +129,9 @@ const Column = ({
               </Form>
             </div>
           ) : (
-            <span>{title}</span>
+            <span className="text-sm font-bold text-text-primary px-2 py-1 leading-6 cursor-pointer">
+              {title}
+            </span>
           )}
         </div>
         <Dropdown>
@@ -151,33 +157,14 @@ const Column = ({
       <div ref={itemDropZoneRef} className="flex flex-col gap-2 overflow-y-auto pr-1 max-h-104">
         {children}
       </div>
-      <Modal open={isOnDelete} onClose={() => setOnDelete(false)}>
-        <Modal.Header>Delete list {title}?</Modal.Header>
-        <Modal.Body>
-          <Form defaultValues={{}} onSubmit={() => { }}>
-            <p className="text-white/80 mb-1">
-              Are you sure you want to delete list {title}? This action cannot be undone.
-            </p>
-            <p className="text-white/80 mb-2">
-              Please enter <strong className="text-red-500">{title}</strong> to confirm:
-            </p>
-            <TextField name="delete" />
-            <div className="flex items-center float-right gap-2">
-              <Button type="submit" variant="contained" color="danger">
-                Delete
-              </Button>
-              <Button
-                type="button"
-                className="text-text-secondary"
-                variant="text"
-                onClick={() => setOnDelete(false)}
-              >
-                Cancel
-              </Button>
-            </div>
-          </Form>
-        </Modal.Body>
-      </Modal>
+      <DeleteModal
+        id={id}
+        title={title}
+        open={isOnDelete}
+        close={() => setOnDelete(false)}
+        onDelete={onDeleteList}
+        type='list'
+      />
     </div>
   );
 };

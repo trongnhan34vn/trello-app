@@ -44,7 +44,7 @@ const Input = ({
         value={value}
         placeholder={placeholder}
         className={clsx(
-          'mt-1 block w-full rounded-lg border-2 border-transparent bg-white/5 py-2 text-sm/6 text-white transition-all duration-200 ease-in',
+          'block w-full rounded-lg border-2 border-transparent bg-white/5 py-2 text-sm/6 text-white transition-all duration-200 ease-in',
           'focus:not-data-focus:outline-none focus:border-white/25 data-focus:outline-2 data-focus:-outline-offset-2 hover:border-white/25 data-focus:outline-white/25',
           leftIcon ? 'pl-10' : 'pl-3',
           rightIcon ? 'pr-10' : 'pr-3',

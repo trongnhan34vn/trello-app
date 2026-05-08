@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { FaTags } from 'react-icons/fa';
 import { GrGroup } from 'react-icons/gr';
 import { MdAccessTime, MdChecklist, MdModeEdit, MdOutlineDescription } from 'react-icons/md';
+import { useParams } from 'react-router-dom';
 import Button from '../../components/Button';
 import ChecklistContainer from '../../components/checklist';
 import Modal, { ModalSize } from '../../components/Modal';
@@ -18,6 +19,12 @@ import EditDescriptionCardForm from '../../forms/card/EditDescriptionCardForm';
 import CreateCheckListForm from '../../forms/checklist/CreateCheckListForm';
 import { useMutationHandler } from '../../hooks/useMutationHandler';
 import { UpdateCardField, useUpdateCard } from '../../hooks/useUpdateCard';
+import { useListBoardMemberQuery } from '../../services/board.member.service';
+import {
+  useCreateCardMemberMutation,
+  useDeleteCardMemberMutation,
+  useListCardMemberQuery,
+} from '../../services/card.member.service';
 import { useDetailCardQuery, useUpdateCardMutation } from '../../services/card.service';
 import {
   useCreateChecklistItemMutation,
@@ -33,8 +40,9 @@ import {
 import type { ErrorResponse } from '../../types/api.type';
 import type { ChecklistItemCreatePayload } from '../../types/checklist.item.type';
 import type { ChecklistCreatePayload } from '../../types/checklist.type';
-import { useParams } from 'react-router-dom';
-import { useListBoardMemberQuery } from '../../services/board.member.service';
+import userImg from '../../assets/user.png';
+import UserHoverCard from '../../components/board/UserHoverCard';
+import { IoClose } from 'react-icons/io5';
 
 interface IProps {
   open: boolean;
@@ -61,12 +69,13 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
   const [createChecklistItem] = useCreateChecklistItemMutation();
   const [updateChecklistItem] = useUpdateChecklistItemMutation();
   const [deleteChecklistItem] = useDeleteChecklistItemMutation();
-
   const [updateChecklist] = useUpdateChecklistMutation();
   const [deleteChecklist] = useDeleteChecklistMutation();
+  const [createCardMember] = useCreateCardMemberMutation();
+  const [deleteCardMember] = useDeleteCardMemberMutation();
 
   const { data: resChecklist } = useListChecklistQuery(
-    { cardId: card?.id ?? id ?? '' },
+    { cardId: card?.id || id || '' },
     {
       skip: !card?.id,
     },
@@ -79,6 +88,16 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
     },
   );
 
+  const { data: resCardMember } = useListCardMemberQuery(
+    {
+      cardId: card?.id || id || '',
+    },
+    {
+      skip: !card?.id,
+    },
+  );
+
+  const cardMembers = resCardMember ? resCardMember.data : [];
   const boardMembers = resBoardMember ? resBoardMember.data : [];
 
   const checklists = resChecklist ? resChecklist.data : null;
@@ -161,6 +180,29 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
     });
   };
 
+  const handleCreateCardMember = (value: any) => {
+    const payload = {
+      userId: value,
+      cardId: card?.id || id || '',
+    };
+
+    handle(() => createCardMember(payload), {
+      hasLoading: false,
+      onError: (error: any) => toast.error(error.message),
+    });
+  };
+
+  const handleDeleteCardMember = (value: any) => {
+    const payload = {
+      id: value
+    }
+
+    handle(() => deleteCardMember(payload), {
+      hasLoading: false,
+      onError: (error: any) => toast.error(error.message),
+    });
+  }
+
   const items = [
     {
       id: 1,
@@ -222,7 +264,14 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
       isDisabled: false,
       header: 'Add member',
       size: PopoverSize.LG,
-      form: () => <AddMemberForm members={boardMembers} />,
+      form: () => (
+        <AddMemberForm
+          onDeleteCardMember={handleDeleteCardMember}
+          onSelect={handleCreateCardMember}
+          cardMembers={cardMembers}
+          boardMembers={boardMembers}
+        />
+      ),
     },
   ];
 
@@ -270,7 +319,7 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
 
     return (
       <div className="px-4">
-        <p className="font-bold text-text-secondary mb-1">Ngày</p>
+        <p className="font-bold text-text-secondary mb-1">Date</p>
         <div className="text-text-secondary flex items-center gap-2 transition-all duration-150 ease-in hover:text-white px-2 py-1 bg-bg-tertiary w-fit rounded cursor-pointer">
           {startDate.format('DD/MM/YYYY')} - {dueDate.format('DD/MM/YYYY HH:mm:ss')}
           {isOverdue && (
@@ -283,8 +332,37 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
     );
   };
 
+  const buildMembers = () => {
+    if (!cardMembers) return;
+    if (cardMembers.length == 0) return;
+
+    return (
+      <div>
+        <p className="px-4 text-text-secondary font-bold mb-2">Members</p>
+        <div className="px-4 flex flex-wrap gap-2">
+          {cardMembers.map((cm) => (
+            <UserHoverCard key={cm.id} member={cm}>
+              <img
+                className="w-10 h-10 object-cover rounded-full cursor-pointer hover:ring-2 hover:ring-primary transition-all duration-150"
+                src={cm.avatarUrl || userImg}
+                alt={cm.fullName}
+              />
+              <Button
+                onClick={() => handleDeleteCardMember(cm.id)}
+                className="p-1! group-hover:block! hidden! -right-2 items-center rounded-full justify-center text-red-500! bg-bg-tertiary/80 opacity-85 hover:opacity-100 absolute -top-2"
+                variant="text"
+              >
+                <IoClose />
+              </Button>
+            </UserHoverCard>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <Modal className="" hasXMark size={ModalSize.LG} open={open} onClose={close}>
+    <Modal className="pb-64" hasXMark size={ModalSize.LG} open={open} onClose={close}>
       <Modal.Header className="text-lg! border-b border-border mb-4 pb-3 ">
         {card?.title || title || ''}
       </Modal.Header>
@@ -336,7 +414,12 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
               );
             })}
           </div>
+          {/* Member */}
+          <div className="mb-5">{buildMembers()}</div>
+          {/* Date */}
           <div className="mb-5">{buildDate()}</div>
+
+          {/* Description */}
           <div className="mb-5">
             <div className="text-white flex items-center justify-between font-bold text-lg mb-2">
               <p className="flex gap-5 items-center">

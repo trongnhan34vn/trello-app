@@ -55,6 +55,7 @@ export const LIST_ENDPOINT = {
   LIST: '/lists',
   CREATE: '/lists',
   UPDATE: '/lists/:id',
+  DELETE: '/lists/:id',
 };
 
 export const CARD_ENDPOINT = {
@@ -62,6 +63,7 @@ export const CARD_ENDPOINT = {
   CREATE: '/cards',
   UPDATE: '/cards/:id',
   DETAIL: '/cards/:id',
+  DELETE: '/cards/:id',
 };
 
 export const BOARD_MEMBER_ENDPOINT = {
@@ -72,6 +74,12 @@ export const BOARD_MEMBER_ENDPOINT = {
 export const WORKSPACE_MEMBER_ENDPOINT = {
   CREATE: '/workspace-members',
 };
+
+export const CARD_MEMBER_ENDPOINT = {
+  LIST: '/card-members',
+  CREATE: '/card-members',
+  DELETE: '/card-members/:id',
+}
 
 export const CHECKLIST_ENDPOINT = {
   LIST: '/checklists',
@@ -117,6 +125,7 @@ export const baseApi = createApi({
     'BoardMember',
     'Checklist',
     'ChecklistItem',
+    'CardMember'
   ],
   endpoints: () => ({}), // empty base
 });

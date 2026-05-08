@@ -102,6 +102,8 @@ const InviteBoardMemberModal = ({ open, close, boardId, boardMembers }: IProps) 
                   email={bm.email}
                   image={bm.avatarUrl}
                   roleId={bm.roleId}
+                  userId={bm.userId}
+                  hasShowRole
                 />
               );
             })}

@@ -162,6 +162,54 @@
 
   /* PLAYER */
   --color-player-bg: #181818;
+
+  /* TRELLO COLORS (Using project variables) */
+  --color-trello-list: var(--color-bg-surface);
+  --color-trello-card: var(--color-bg-tertiary);
+  --color-trello-card-hover: var(--color-bg-card);
+  --color-trello-placeholder: rgba(255, 255, 255, 0.05);
+
+  /* SHADOWS */
+  --shadow-trello-card: 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
+}
+
+.trello-column {
+  background-color: var(--color-bg-surface);
+  border-radius: 0.5rem;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.trello-card {
+  background-color: var(--color-bg-tertiary);
+  border-radius: 0.5rem;
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.2),
+    0 1px 1px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+  transition:
+    background-color 0.15s ease-in,
+    border-color 0.1s ease-in;
+}
+
+.trello-card:hover {
+  background-color: var(--color-bg-card);
+  border-color: var(--color-primary);
+}
+
+.trello-placeholder {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border: 2px dashed rgba(255, 255, 255, 0.1) !important;
+  color: transparent !important;
+  height: 48px;
+  border-radius: 8px;
+}
+
+.trello-drag-overlay {
+  transform: rotate(3deg);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4) !important;
+  cursor: grabbing !important;
 }
 
 html,
@@ -300,7 +348,9 @@ body {
   color: white !important;
 }
 
-.ant-picker-time-panel-column > li.ant-picker-time-panel-cell-selected .ant-picker-time-panel-cell-inner {
+.ant-picker-time-panel-column
+  > li.ant-picker-time-panel-cell-selected
+  .ant-picker-time-panel-cell-inner {
   background-color: rgba(29, 185, 84, 0.2) !important;
   color: #1db954 !important;
 }
@@ -349,9 +399,6 @@ body {
   background-color: rgba(255, 255, 255, 0.1) !important;
   color: rgba(255, 255, 255, 0.2) !important;
 }
-
-
-
 
 .quill-custom .ql-editor {
   padding: 12px;
@@ -698,4 +745,3 @@ input[type='time'] {
   color-scheme: dark;
   accent-color: var(--color-primary);
 }
-

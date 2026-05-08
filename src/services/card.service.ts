@@ -9,6 +9,7 @@ export const cardService = baseApi.injectEndpoints({
         url: buildUrl({ path: CARD_ENDPOINT.LIST, query: { boardId: params } }),
         method: HttpMethod.GET,
       }),
+      providesTags: ['Card']
     }),
     createCard: builder.mutation({
       query: (body) => ({
@@ -29,8 +30,23 @@ export const cardService = baseApi.injectEndpoints({
     detailCard: builder.query({
       query: (param) => ({
         url: buildUrl({ path: CARD_ENDPOINT.DETAIL, params: { id: param.id } }),
+        method: HttpMethod.GET
       }),
       providesTags: ['Card'],
+    }),
+    deleteCard: builder.mutation({
+      query: (param) => ({
+        url: buildUrl({ path: CARD_ENDPOINT.DELETE, params: { id: param.id } }),
+        method: HttpMethod.DELETE,
+      }),
+      invalidatesTags: ['Card'],
+    }),
+    updatePosCard: builder.mutation({
+      query: (param) => ({
+        url: buildUrl({ path: CARD_ENDPOINT.UPDATE, params: { id: param.id } }),
+        method: HttpMethod.PATCH,
+        body: param,
+      }),
     }),
   }),
 });
@@ -40,4 +56,6 @@ export const {
   useCreateCardMutation,
   useUpdateCardMutation,
   useDetailCardQuery,
+  useDeleteCardMutation,
+  useUpdatePosCardMutation,
 } = cardService;

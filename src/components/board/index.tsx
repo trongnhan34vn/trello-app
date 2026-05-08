@@ -1,4 +1,4 @@
-import { DragDropProvider } from '@dnd-kit/react';
+import { DragDropProvider, DragOverlay } from '@dnd-kit/react';
 import { useEffect, useRef, useState } from 'react';
 import { generateKeyBetween } from 'fractional-indexing';
 import { CardConst, ListConst } from '../../constants';
@@ -15,6 +15,8 @@ interface IProps {
   onCreateCard: (payload: CardCreateForm) => Promise<Card | null>;
   onDragCard: (payload: DragUpdateCard) => void;
   onDragList: (payload: DragUpdateList) => void;
+  onDeleteList: (payload: any) => void;
+  onDeleteCard: (payload: any) => void;
 }
 
 const KanbanBoard = ({
@@ -25,6 +27,8 @@ const KanbanBoard = ({
   onCreateCard,
   onDragCard,
   onDragList,
+  onDeleteCard,
+  onDeleteList,
 }: IProps) => {
   const defaultList = {
     id: ListConst.DEFAULT_ID,
@@ -170,17 +174,31 @@ const KanbanBoard = ({
     // 2. Hovering over a specific Item
     if (target.type === 'item') {
       const targetId = target.id as string;
+
       if (isDefaultCardId(targetId)) {
         const listId = targetId.replace(`${CardConst.DEFAULT_ID}_`, '');
-        return { targetListId: listId, targetIndex: null };
+        return {
+          targetListId: listId,
+          targetIndex: null,
+        };
       }
 
       const targetCard = current.find((c) => c.id === targetId);
+
       if (!targetCard?.listId) return null;
 
-      // Use the index provided by @dnd-kit if available, otherwise fallback to finding it
-      const index = typeof target.index === 'number' ? target.index : null;
-      return { targetListId: targetCard.listId, targetIndex: index };
+      // IMPORTANT:
+      // derive index from CURRENT STATE
+      const targetCards = current
+        .filter((c) => c.listId === targetCard.listId && !isDefaultCardId(c.id))
+        .sort(byPosition);
+
+      const index = targetCards.findIndex((c) => c.id === targetId);
+
+      return {
+        targetListId: targetCard.listId,
+        targetIndex: index >= 0 ? index : null,
+      };
     }
 
     // 3. Hovering over the Column background (Low Priority)
@@ -225,38 +243,77 @@ const KanbanBoard = ({
     if (source.type !== 'item') return;
 
     const draggedId = source.id as string;
-    if (isDefaultCardId(draggedId)) return; // never move the placeholder
 
-    const current = cardsRef.current;
-    const draggedCard = current.find((c) => c.id === draggedId);
-    if (!draggedCard) return;
+    if (isDefaultCardId(draggedId)) return;
+
+    const current = [...cardsRef.current];
+
+    const draggedIndex = current.findIndex((c) => c.id === draggedId);
+
+    if (draggedIndex === -1) return;
+
+    const draggedCard = current[draggedIndex];
 
     const resolved = resolveTarget(target, current, draggedId);
+
     if (!resolved) return;
+
     const { targetListId, targetIndex } = resolved;
 
-    // Build the new list order for the target column
-    const withoutDragged = current.filter((c) => c.id !== draggedId);
-    const targetListCards = withoutDragged
-      .filter((c) => c.listId === targetListId && !isDefaultCardId(c.id))
-      .sort(byPosition);
+    // remove dragged card first
+    current.splice(draggedIndex, 1);
 
-    const insertIdx = targetIndex !== null ? Math.max(0, targetIndex) : targetListCards.length;
+    // cards of target list AFTER removal
+    const targetCards = current.filter((c) => c.listId === targetListId).sort(byPosition);
 
-    const movedCard: Card = { ...draggedCard, listId: targetListId };
-    const newTargetCards = [
-      ...targetListCards.slice(0, insertIdx),
-      movedCard,
-      ...targetListCards.slice(insertIdx),
-    ];
+    // calculate insert position
+    let insertIndex = targetIndex !== null ? targetIndex : targetCards.length;
 
-    const updatedCards = [
-      ...withoutDragged.filter((c) => c.listId !== targetListId || isDefaultCardId(c.id)),
-      ...newTargetCards,
-    ];
+    // normalize insert index
+    insertIndex = Math.max(0, Math.min(insertIndex, targetCards.length));
 
-    cardsRef.current = updatedCards;
-    setCards(updatedCards);
+    // anti-loop guard
+    const sameList = draggedCard.listId === targetListId;
+
+    if (sameList) {
+      const oldIndex = cardsRef.current
+        .filter((c) => c.listId === targetListId)
+        .sort(byPosition)
+        .findIndex((c) => c.id === draggedId);
+
+      const normalizedInsert = oldIndex < insertIndex ? insertIndex - 1 : insertIndex;
+
+      if (oldIndex === normalizedInsert) {
+        return;
+      }
+    }
+
+    // calculate optimistic position
+    const before = targetCards[insertIndex - 1]?.position ?? null;
+
+    const after = targetCards[insertIndex]?.position ?? null;
+
+    const movedCard: Card = {
+      ...draggedCard,
+      listId: targetListId,
+      position: generateKeyBetween(before, after),
+    };
+
+    // find actual global insert position
+    const globalInsertIndex = current.findIndex((c, idx) => {
+      const listCardsBefore = current.slice(0, idx).filter((x) => x.listId === targetListId);
+
+      return listCardsBefore.length === insertIndex;
+    });
+
+    if (globalInsertIndex === -1) {
+      current.push(movedCard);
+    } else {
+      current.splice(globalInsertIndex, 0, movedCard);
+    }
+
+    cardsRef.current = current;
+    setCards(current);
   };
 
   /**
@@ -374,14 +431,26 @@ const KanbanBoard = ({
     }
   };
 
+  const [activeId, setActiveId] = useState<string | null>(null);
+
   return (
-    <DragDropProvider onDragStart={() => { }} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
+    <DragDropProvider
+      onDragStart={(event) => {
+        setActiveId(event.operation.source?.id as string);
+      }}
+      onDragOver={handleDragOver}
+      onDragEnd={(event) => {
+        handleDragEnd(event);
+        setActiveId(null);
+      }}
+    >
       <div className="inline-flex h-full w-max min-w-0 max-w-none flex-nowrap items-stretch gap-4 p-2">
         {getRenderColumnOrder(columnOrder).map((column, columnIndex) => {
           const list =
             column === ListConst.DEFAULT_ID ? defaultList : lists.find((l) => l.id == column);
           return (
             <Column
+              onDeleteList={onDeleteList}
               boardId={boardId || ''}
               isOpenCreateListForm={isOpenCreateListForm}
               onCloseCreateListForm={() => setOpenCreateListForm(false)}
@@ -396,6 +465,7 @@ const KanbanBoard = ({
               {column !== ListConst.DEFAULT_ID &&
                 getCardsByList(list?.id ?? '').map((card, cardIndex) => (
                   <Item
+                    onDeleteCard={onDeleteCard}
                     title={card.title}
                     key={card.id}
                     listId={list?.id ?? ''}
@@ -413,6 +483,29 @@ const KanbanBoard = ({
           );
         })}
       </div>
+      <DragOverlay>
+        {activeId
+          ? (() => {
+            const card = cards.find((c) => c.id === activeId);
+            if (card) {
+              return (
+                <div className="trello-card trello-drag-overlay px-3.5 py-2 text-sm font-medium w-[256px]">
+                  {card.title}
+                </div>
+              );
+            }
+            const list = lists.find((l) => l.id === activeId);
+            if (list) {
+              return (
+                <div className="trello-column trello-drag-overlay p-3 w-[280px] h-fit">
+                  <div className="font-semibold mb-2">{list.name}</div>
+                </div>
+              );
+            }
+            return null;
+          })()
+          : null}
+      </DragOverlay>
     </DragDropProvider>
   );
 };
