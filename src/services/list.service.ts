@@ -24,6 +24,14 @@ export const listService = baseApi.injectEndpoints({
         method: HttpMethod.PATCH,
         body,
       }),
+      invalidatesTags: ['List'],
+    }),
+    updatePosList: builder.mutation({
+      query: (body) => ({
+        url: buildUrl({ path: LIST_ENDPOINT.UPDATE, params: { id: body.id } }),
+        method: HttpMethod.PATCH,
+        body,
+      }),
     }),
     deleteList: builder.mutation({
       query: (body) => ({
@@ -40,4 +48,5 @@ export const {
   useCreateListMutation,
   useUpdateListMutation,
   useDeleteListMutation,
+  useUpdatePosListMutation
 } = listService;

@@ -5,14 +5,20 @@ import dayjs from 'dayjs';
 import { generateKeyBetween } from 'fractional-indexing';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { FaTags } from 'react-icons/fa';
+import { FaEdit, FaTags } from 'react-icons/fa';
+import { FaCheck } from 'react-icons/fa6';
 import { GrGroup } from 'react-icons/gr';
+import { IoClose } from 'react-icons/io5';
 import { MdAccessTime, MdChecklist, MdModeEdit, MdOutlineDescription } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
+import userImg from '../../assets/user.png';
+import UserHoverCard from '../../components/board/UserHoverCard';
 import Button from '../../components/Button';
 import ChecklistContainer from '../../components/checklist';
+import TextField from '../../components/form/TextField';
 import Modal, { ModalSize } from '../../components/Modal';
 import PopoverBox, { PopoverAnchor, PopoverSize } from '../../components/PopoverBox';
+import Form from '../../forms';
 import AddMemberForm from '../../forms/card/AddMemberForm';
 import DatePickerCardForm from '../../forms/card/DatePickerCardForm';
 import EditDescriptionCardForm from '../../forms/card/EditDescriptionCardForm';
@@ -40,9 +46,6 @@ import {
 import type { ErrorResponse } from '../../types/api.type';
 import type { ChecklistItemCreatePayload } from '../../types/checklist.item.type';
 import type { ChecklistCreatePayload } from '../../types/checklist.type';
-import userImg from '../../assets/user.png';
-import UserHoverCard from '../../components/board/UserHoverCard';
-import { IoClose } from 'react-icons/io5';
 
 interface IProps {
   open: boolean;
@@ -62,6 +65,7 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
   }, [card]);
 
   const [isOnEditDescription, setOnEditDescription] = useState(false);
+  const [isOnEditTitle, setOnEditTitle] = useState(false);
 
   const { handle } = useMutationHandler();
   const [updateCard] = useUpdateCardMutation();
@@ -194,14 +198,32 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
 
   const handleDeleteCardMember = (value: any) => {
     const payload = {
-      id: value
-    }
+      id: value,
+    };
 
     handle(() => deleteCardMember(payload), {
       hasLoading: false,
       onError: (error: any) => toast.error(error.message),
     });
-  }
+  };
+
+  const handleEditCardTitle = (value: any) => {
+    const payload = {
+      title: value.title,
+      id: card?.id,
+    };
+
+    handle(() => updateCard(payload), {
+      hasLoading: false,
+      onSuccess: (data: any) => {
+        toast.success(data.message);
+        setOnEditTitle(false);
+      },
+      onError: (error: any) => {
+        toast.error(error.message);
+      },
+    });
+  };
 
   const items = [
     {
@@ -376,7 +398,38 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
             >
               <CheckIcon className="hidden size-4 fill-black group-data-checked:block" />
             </Checkbox>
-            <p className="text-xl font-bold text-white">{card?.title || title || ''}</p>
+            {isOnEditTitle ? (
+              <Form defaultValues={{ title: card?.title }} onSubmit={handleEditCardTitle}>
+                <div className="flex gap-2 items-center">
+                  <TextField containerClassName="!mb-0" name="title" />
+
+                  <Button className="px-2!" variant="text">
+                    <FaCheck />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="text"
+                    className="text-red-500!"
+                    onClick={() => {
+                      setOnEditTitle(false);
+                    }}
+                  >
+                    <IoClose />
+                  </Button>
+                </div>
+              </Form>
+            ) : (
+              <div className="flex items-center gap-2">
+                <p className="text-xl font-bold text-white">{card?.title || title || ''}</p>
+                <Button
+                  onClick={() => setOnEditTitle(true)}
+                  className="p-2! hover:text-primary! text-text-secondary!"
+                  variant="text"
+                >
+                  <FaEdit />
+                </Button>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-4 gap-4 mb-8 px-4">

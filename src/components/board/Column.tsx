@@ -29,6 +29,7 @@ interface IProps {
   onOpenCreateListForm: () => void;
   onCloseCreateListForm: () => void;
   onDeleteList: (payload: any) => void;
+  onRenameList: (payload: any) => Promise<boolean>;
 }
 const Column = ({
   id,
@@ -41,7 +42,8 @@ const Column = ({
   isOpenCreateListForm,
   onOpenCreateListForm,
   onCloseCreateListForm,
-  onDeleteList
+  onDeleteList,
+  onRenameList
 }: IProps) => {
   const { ref: dropRef } = useDroppable({
     id,
@@ -101,21 +103,33 @@ const Column = ({
   const [isOnRename, setOnRename] = useState(false);
   const [isOnDelete, setOnDelete] = useState(false);
 
+  const handleRenameList = async (value: any) => {
+    const payload = {
+      name: value.name,
+      id: id || ''
+    }
+    let state = await onRenameList(payload);
+    
+    if (state) {
+      setOnRename(false)
+    }
+  }
+
   return (
     <div
       ref={setRef}
       className={clsx(
         baseColumnClass,
         'h-fit min-h-0 w-[280px]',
-        isDragging && 'opacity-50 grayscale-[50%] bg-black/40',
+        isDragging && 'opacity-50 grayscale-50 bg-black/40',
       )}
     >
       <div className="w-full py-1 flex items-center justify-between mb-2">
         <div className="w-full flex items-center">
           {isOnRename ? (
             <div className="relative w-full">
-              <Form defaultValues={{ rename: title }} onSubmit={() => { }}>
-                <TextField name="rename" containerClassName="mb-0! w-full" />
+              <Form defaultValues={{ name: title }} onSubmit={handleRenameList}>
+                <TextField name="name" containerClassName="mb-0! w-full" />
                 <div className="absolute top-1/2 -translate-y-1/2 right-1">
                   <Button
                     type="button"

@@ -4,6 +4,7 @@ import { MdGroupAdd } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 import userImg from '../../assets/user.png';
 import KanbanBoard from '../../components/board';
+import UserHoverCard from '../../components/board/UserHoverCard';
 import Button from '../../components/Button';
 import { useLoading } from '../../hooks/useLoading';
 import { useMutationHandler } from '../../hooks/useMutationHandler';
@@ -15,19 +16,18 @@ import {
   useCreateCardMutation,
   useDeleteCardMutation,
   useListCardQuery,
-  useUpdateCardMutation,
-  useUpdatePosCardMutation,
+  useUpdatePosCardMutation
 } from '../../services/card.service';
 import {
   useCreateListMutation,
   useDeleteListMutation,
   useListListQuery,
   useUpdateListMutation,
+  useUpdatePosListMutation,
 } from '../../services/list.service';
 import type { ErrorResponse, SuccessResponse } from '../../types/api.type';
 import type { Card, CardCreateForm, DragUpdateCard } from '../../types/card.type';
 import type { DragUpdateList, List, ListCreateForm } from '../../types/list.type';
-import UserHoverCard from '../../components/board/UserHoverCard';
 
 const Board = () => {
   const { id } = useParams();
@@ -63,9 +63,9 @@ const Board = () => {
 
   const [createList] = useCreateListMutation();
   const [createCard] = useCreateCardMutation();
-  const [updateCard] = useUpdateCardMutation();
   const [updatePosCard] = useUpdatePosCardMutation();
   const [updateList] = useUpdateListMutation();
+  const [updatePosList] = useUpdatePosListMutation();
   const [deleteCard] = useDeleteCardMutation();
   const [deleteList] = useDeleteListMutation();
 
@@ -119,7 +119,7 @@ const Board = () => {
   };
 
   const handleAsyncDragList = async (payload: DragUpdateList) => {
-    await handle(() => updateList(payload), {
+    await handle(() => updatePosList(payload), {
       hasLoading: false,
     });
   };
@@ -148,6 +148,15 @@ const Board = () => {
     });
   };
 
+  const handleRenameList = async (payload: any) => {
+    return await handle(() => updateList(payload), {
+      onSuccess: (data: any) => {
+        toast.success(data.message);
+      },
+      onError: (error: any) => toast.error(error.message),
+    });
+  };
+
   return (
     <div
       style={{
@@ -167,7 +176,11 @@ const Board = () => {
             {boardMembers.map((bm) => (
               <UserHoverCard key={bm.id} member={bm}>
                 <div className="w-10 h-10 rounded-full overflow-hidden cursor-pointer border-2 border-transparent hover:border-primary transition-all duration-150">
-                  <img className="w-full h-full object-cover" src={bm.avatarUrl || userImg} alt="" />
+                  <img
+                    className="w-full h-full object-cover"
+                    src={bm.avatarUrl || userImg}
+                    alt=""
+                  />
                 </div>
               </UserHoverCard>
             ))}
@@ -190,6 +203,7 @@ const Board = () => {
           onDragList={handleAsyncDragList}
           onDeleteCard={handleDeleteCard}
           onDeleteList={handleDeleteList}
+          onRenameList={handleRenameList}
         />
       </div>
       {/* Modal */}
