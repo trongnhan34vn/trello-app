@@ -17,6 +17,7 @@ interface IProps {
   onDragList: (payload: DragUpdateList) => void;
   onDeleteList: (payload: any) => void;
   onDeleteCard: (payload: any) => void;
+  onRenameList: (payload: any) => Promise<boolean>;
 }
 
 const KanbanBoard = ({
@@ -29,6 +30,7 @@ const KanbanBoard = ({
   onDragList,
   onDeleteCard,
   onDeleteList,
+  onRenameList,
 }: IProps) => {
   const defaultList = {
     id: ListConst.DEFAULT_ID,
@@ -300,7 +302,7 @@ const KanbanBoard = ({
     };
 
     // find actual global insert position
-    const globalInsertIndex = current.findIndex((c, idx) => {
+    const globalInsertIndex = current.findIndex((_, idx) => {
       const listCardsBefore = current.slice(0, idx).filter((x) => x.listId === targetListId);
 
       return listCardsBefore.length === insertIndex;
@@ -458,6 +460,7 @@ const KanbanBoard = ({
               listCreateDefaultValues={listCreateDefaultValues}
               onCreateListSubmit={handleCreateListSubmit}
               title={list?.name || ''}
+              onRenameList={onRenameList}
               key={column}
               id={column}
               index={columnIndex}

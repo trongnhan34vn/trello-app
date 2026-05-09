@@ -49,6 +49,7 @@ export const WORKSPACE_ENDPOINT = {
 export const BOARD_ENDPOINT = {
   CREATE: '/boards',
   DETAIL: '/boards/:id',
+  LIST: '/boards'
 };
 
 export const LIST_ENDPOINT = {

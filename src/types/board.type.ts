@@ -11,6 +11,7 @@ export type Board = {
     lists?: List[];
     createdAt?: string;
     updatedAt?: string;
+    workspaceName?: string;
 }
 
 export type BoardCreateForm = {

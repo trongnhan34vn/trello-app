@@ -10,6 +10,7 @@ export const useMutationHandler = () => {
 
       const res = await promise().unwrap();
       onSuccess && onSuccess(res);
+      return res;
     } catch (error: any) {
       const isConfirmEmailPage = window.location.pathname.includes('/confirm') || window.location.pathname.includes('/');
 

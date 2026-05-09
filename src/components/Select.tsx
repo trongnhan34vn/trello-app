@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce';
-import { useMemo } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import AsyncSelect from 'react-select/async';
 import type { Option } from '../types/select.type';
 import { clsx } from 'clsx';
@@ -17,6 +17,9 @@ interface IProps {
   defaultValue?: any;
   onChange?: (value: any) => void;
   disabled?: boolean;
+  containerClassName?: string;
+  isHiddenDropdownIcon?: boolean;
+  startIcon?: ReactNode
 }
 const Select = ({
   options,
@@ -28,6 +31,9 @@ const Select = ({
   onChange,
   value,
   disabled,
+  containerClassName,
+  isHiddenDropdownIcon,
+  startIcon,
 }: IProps) => {
   const loadOptions = useMemo(() => {
     const debounced = debounce((inputValue: string, resolve: (opts: Option[]) => void) => {
@@ -41,7 +47,12 @@ const Select = ({
       });
   }, [options]);
   return (
-    <div className={clsx(disabled && 'cursor-not-allowed')}>
+    <div className={clsx(disabled && 'cursor-not-allowed', containerClassName, 'relative')}>
+      {startIcon && (
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10">
+          {startIcon}
+        </div>
+      )}
       <AsyncSelect
         isDisabled={disabled}
         menuPortalTarget={document.body}
@@ -78,7 +89,7 @@ const Select = ({
           }),
           valueContainer: (base) => ({
             ...base,
-            padding: '0.25rem 0.75rem',
+            padding: startIcon ? '0.25rem 0.75rem 0.25rem 2.5rem' : '0.25rem 0.75rem',
           }),
           input: (base) => ({
             ...base,
@@ -116,12 +127,15 @@ const Select = ({
             },
           }),
           indicatorSeparator: (base) => ({ ...base, display: 'none' }),
-          dropdownIndicator: (base, state) => ({
-            ...base,
-            padding: '0.5rem',
-            color: state.isFocused ? '#FFFFFF' : 'rgb(255 255 255 / 0.6)',
-            ':hover': { color: '#FFFFFF' },
-          }),
+          dropdownIndicator: (base, state) =>
+            isHiddenDropdownIcon
+              ? { display: 'none' }
+              : {
+                ...base,
+                padding: '0.5rem',
+                color: state.isFocused ? '#FFFFFF' : 'rgb(255 255 255 / 0.6)',
+                ':hover': { color: '#FFFFFF' },
+              },
           clearIndicator: (base) => ({
             ...base,
             padding: '0.5rem',
