@@ -8,12 +8,12 @@ import user from '../assets/user.png';
 import logo from '../assets/vite.svg';
 import CreateBoardForm from '../forms/board/CreateBoardForm';
 import { buildRouteWithId, ROUTES } from '../routes';
+import { BOARD_ENDPOINT, http } from '../services';
 import { useListImageQuery } from '../services/image.service';
+import type { Board } from '../types/board.type';
 import Button from './Button';
 import PopoverBox, { PopoverAnchor, PopoverSize } from './PopoverBox';
 import Select from './Select';
-import { BOARD_ENDPOINT, http } from '../services';
-import type { Board } from '../types/board.type';
 
 const Header = () => {
   const { t } = useTranslation();
@@ -58,7 +58,7 @@ const Header = () => {
       const options = boards.map((b) => {
         return {
           value: b.id,
-          label: buildSearchOption(b)
+          label: buildSearchOption(b),
         };
       });
 
@@ -92,12 +92,7 @@ const Header = () => {
           onChange={(option: any) => {
             setSelectedBoardId(option);
 
-            navigate(
-              buildRouteWithId(
-                ROUTES.BOARD,
-                option.value
-              )
-            );
+            navigate(buildRouteWithId(ROUTES.BOARD, option.value));
           }}
           containerClassName="w-full!"
           isHiddenDropdownIcon
