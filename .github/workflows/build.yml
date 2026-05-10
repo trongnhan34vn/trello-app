@@ -43,11 +43,14 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           envs: IMAGE_TAG
           script: |
+            set -e
+            IMAGE="${{ secrets.ECR_REGISTRY }}/nello-app:${{ github.sha }}"
+
             aws ecr get-login-password --region ap-southeast-1 \
               | docker login --username AWS --password-stdin \
                 ${{ secrets.ECR_REGISTRY }}
 
-            docker pull ${{ secrets.ECR_REGISTRY }}/nello-app:$IMAGE_TAG
+            docker pull $IMAGE
 
             docker stop nello-app || true
             docker rm nello-app || true
