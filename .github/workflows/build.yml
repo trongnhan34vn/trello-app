@@ -55,6 +55,8 @@ jobs:
             docker stop nello-app || true
             docker rm nello-app || true
 
+            mkdir -p /home/ubuntu/app 
+            
             cat > /home/ubuntu/app/.env << 'EOF'
             ${{ secrets.ENV_FILE }}
             EOF
