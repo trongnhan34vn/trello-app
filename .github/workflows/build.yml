@@ -55,10 +55,15 @@ jobs:
             docker stop nello-app || true
             docker rm nello-app || true
 
+            cat > /home/ubuntu/app/.env << 'EOF'
+            ${{ secrets.ENV_FILE }}
+            EOF
+
             docker run -d \
               --name nello-app \
               --restart unless-stopped \
               -p 80:80 \
+              --env-file /home/ubuntu/app/.env \
               "$IMAGE"
 
             docker image prune -f
