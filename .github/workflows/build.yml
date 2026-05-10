@@ -36,6 +36,7 @@ jobs:
             --build-arg VITE_API_URL=${{ secrets.VITE_API_URL }} \
             --build-arg BACKEND_HOST=${{ secrets.BACKEND_HOST }} \
             --build-arg BACKEND_PORT=${{ secrets.BACKEND_PORT }} \
+              --build-arg ALB_DNS=${{ secrets.ALB_DNS }} \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
