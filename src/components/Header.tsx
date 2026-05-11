@@ -14,6 +14,8 @@ import type { Board } from '../types/board.type';
 import Button from './Button';
 import PopoverBox, { PopoverAnchor, PopoverSize } from './PopoverBox';
 import Select from './Select';
+import { useMeQuery } from '../services/user.service';
+import Dropdown, { DropdownMenuSize } from './Dropdown';
 
 const Header = () => {
   const { t } = useTranslation();
@@ -21,8 +23,11 @@ const Header = () => {
   const { pathname } = useLocation();
 
   const { data: res, refetch } = useListImageQuery();
-  const images = res ? res.data : [];
+  const { data: meRes } = useMeQuery();
 
+  const currentUser = meRes?.data ?? null;
+
+  const images = res ? res.data : [];
   const isHome = pathname == ROUTES.DASHBOARD;
 
   useEffect(() => {
@@ -124,9 +129,39 @@ const Header = () => {
         <div>
           <IoIosNotificationsOutline size={24} className="text-text-muted cursor-not-allowed" />
         </div>
-        <div className="w-11 h-11 rounded-full overflow-hidden cursor-pointer border-3 border-transparent hover:border-border">
-          <img src={user} className="w-full h-full object-contain" alt="" />
-        </div>
+        <Dropdown className="max-h-11!">
+          <Dropdown.Button>
+            <div className="w-11 h-11 rounded-full overflow-hidden cursor-pointer border-3 border-transparent hover:border-border">
+              <img
+                src={currentUser?.avatarUrl || user}
+                className="w-full h-full object-contain"
+                alt=""
+              />
+            </div>
+          </Dropdown.Button>
+          <Dropdown.Items size={DropdownMenuSize.LG}>
+            <Dropdown.Item disabled>
+              <div className="flex gap-2 justify-center w-full items-center">
+                <div className="w-11 h-11 rounded-full overflow-hidden cursor-pointer border-3 border-transparent hover:border-border">
+                  <img
+                    src={currentUser?.avatarUrl || user}
+                    className="w-full h-full object-contain"
+                    alt=""
+                  />
+                </div>
+                <div>
+                  <p className="font-bold">{currentUser?.fullName}</p>
+                  <p className="text-xs text-text-secondary">{currentUser?.email}</p>
+                </div>
+              </div>
+            </Dropdown.Item>
+            <Dropdown.Separator />
+
+            <Dropdown.Item>Profile</Dropdown.Item>
+            <Dropdown.Separator />
+            <Dropdown.Item className="text-red-500!">Sign Out</Dropdown.Item>
+          </Dropdown.Items>
+        </Dropdown>
       </div>
     </div>
   );

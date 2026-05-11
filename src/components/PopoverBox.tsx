@@ -116,7 +116,7 @@ PopoverBox.Panel = function Panel({
       <Popover.Panel
         anchor={anchor as any}
         className={clsx(
-          'absolute z-10 mt-2 rounded-xl',
+          'absolute z-90 mt-2 rounded-xl',
           'bg-bg-secondary/80 backdrop-blur-xl border border-white/10',
           'text-sm text-white shadow-lg drop-shadow-xl',
           'p-3 space-y-3',

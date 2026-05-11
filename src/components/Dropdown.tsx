@@ -1,18 +1,18 @@
 import { Menu } from '@headlessui/react';
 import type { ReactNode } from 'react';
 
-const Dropdown = ({ children }: { children: ReactNode }) => {
+import { MenuButton } from '@headlessui/react';
+import { clsx } from 'clsx';
+
+const Dropdown = ({ children, className }: { children: ReactNode; className?: string }) => {
   return (
-    <Menu as="div" className="relative inline-block">
+    <Menu as="div" className={clsx("relative inline-block", className)}>
       {children}
     </Menu>
   );
 };
 
 export default Dropdown;
-
-import { MenuButton } from '@headlessui/react';
-import { clsx } from 'clsx';
 
 Dropdown.Button = function Button({
   children,
@@ -63,7 +63,7 @@ Dropdown.Items = function Items({
     <MenuItems
       anchor={anchor}
       className={clsx(
-        'absolute z-10 mt-2 origin-top-right rounded-lg',
+        'absolute z-70 mt-2 origin-top-right rounded-lg',
         'bg-bg-secondary backdrop-blur-xl border border-white/10 p-1',
         'text-sm text-white shadow-lg',
         sizeMap[size],
@@ -85,7 +85,9 @@ Dropdown.Item = function Item({ children, onClick, className, disabled }: any) {
         className={clsx(
           'group flex w-full text-white/85 items-center text-sm gap-2 rounded-md px-3 py-2 text-left ',
           className,
-          disabled ? '' : 'hover:bg-white/10 hover:text-white cursor-pointer transition-all duration-150 ease-in',
+          disabled
+            ? ''
+            : 'hover:bg-white/10 hover:text-white cursor-pointer transition-all duration-150 ease-in',
         )}
       >
         {children}
