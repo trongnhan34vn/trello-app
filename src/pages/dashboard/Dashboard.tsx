@@ -51,7 +51,7 @@ const Dashboard = () => {
       {/* Workspace item */}
       <div className="w-full relative">
         {/* title */}
-        <p className="px-3 font-bold py-4 text-xl mb-5 sticky bg-bg-secondary top-0">
+        <p className="px-3 font-bold py-4 text-xl mb-5 sticky z-50 bg-bg-secondary top-0">
           {t('dashboard:content.title')}
         </p>
         {workspaces.length == 0 && (

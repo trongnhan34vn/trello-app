@@ -21,11 +21,13 @@ export const AUTH_ENDPOINT = {
   SIGN_UP: '/auth/sign-up',
   RESEND_CODE: '/auth/resend-code',
   CONFIRM_SIGN_UP: '/auth/confirm-sign-up',
+  REFRESH_TOKEN: '/auth/refresh-token',
 };
 
 export const USER_ENDPOINT = {
   ME: '/users/me',
-  LIST: 'users',
+  LIST: '/users',
+  UPDATE: '/users/:id',
 };
 
 export const WORKSPACE_CATEGORY_ENDPOINT = {
@@ -49,7 +51,7 @@ export const WORKSPACE_ENDPOINT = {
 export const BOARD_ENDPOINT = {
   CREATE: '/boards',
   DETAIL: '/boards/:id',
-  LIST: '/boards'
+  LIST: '/boards',
 };
 
 export const LIST_ENDPOINT = {
@@ -80,7 +82,7 @@ export const CARD_MEMBER_ENDPOINT = {
   LIST: '/card-members',
   CREATE: '/card-members',
   DELETE: '/card-members/:id',
-}
+};
 
 export const CHECKLIST_ENDPOINT = {
   LIST: '/checklists',
@@ -102,12 +104,31 @@ export const baseQuery = fetchBaseQuery({
 });
 
 const baseQueryWithReauth: BaseQueryFn = async (args, api, extraOptions) => {
-  const result = await baseQuery(args, api, extraOptions);
-  const isConfirmEmailPage =
-    window.location.pathname.includes('/confirm') || window.location.pathname == '/';
+  let result = await baseQuery(args, api, extraOptions);
 
-  if (result.error?.status == 401 && !isConfirmEmailPage) {
-    window.location.href = '/';
+  const isConfirmEmailPage =
+    window.location.pathname.includes('/confirm') || window.location.pathname === '/';
+
+  // access token expired
+  if (result.error?.status === 401 && !isConfirmEmailPage) {
+    // call refresh api
+    const refreshResult = await baseQuery(
+      {
+        url: AUTH_ENDPOINT.REFRESH_TOKEN,
+        method: HttpMethod.POST,
+      },
+      api,
+      extraOptions,
+    );
+
+    // refresh success
+    if (refreshResult.data) {
+      // recall original request
+      result = await baseQuery(args, api, extraOptions);
+    } else {
+      // refresh failed
+      window.location.href = '/';
+    }
   }
 
   return result;
@@ -126,7 +147,7 @@ export const baseApi = createApi({
     'BoardMember',
     'Checklist',
     'ChecklistItem',
-    'CardMember'
+    'CardMember',
   ],
   endpoints: () => ({}), // empty base
 });
