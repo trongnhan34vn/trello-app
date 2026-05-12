@@ -70,7 +70,7 @@ const Select = ({
         loadOptions={loadOptions}
         value={value}
         styles={{
-          menuPortal: (base) => ({ ...base, zIndex: 20 }),
+          menuPortal: (base) => ({ ...base, zIndex: 50 }),
           container: (base) => ({ ...base, width: '100%' }),
           control: (base, state) => ({
             ...base,
