@@ -48,7 +48,7 @@ const SidebarComp = () => {
         </Button>
       </div>
       {/* List workspaces */}
-      <Sidebar backgroundColor="#121212" className="border-none! min-w-full! w-full! flex-1">
+      <Sidebar backgroundColor="#121212" className="border-none! min-w-full! w-full! flex-1 overflow-scroll">
         <Menu
           menuItemStyles={{
             button: {

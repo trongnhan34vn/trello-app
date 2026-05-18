@@ -70,7 +70,7 @@ const Select = ({
         loadOptions={loadOptions}
         value={value}
         styles={{
-          menuPortal: (base) => ({ ...base, zIndex: 50 }),
+          menuPortal: (base) => ({ ...base, zIndex: 150 }),
           container: (base) => ({ ...base, width: '100%' }),
           control: (base, state) => ({
             ...base,
@@ -147,7 +147,7 @@ const Select = ({
             backgroundColor: 'var(--color-bg-tertiary)',
             border: `1px solid #FFFFFF40`,
             overflow: 'hidden',
-            zIndex: 50,
+            zIndex: 150,
           }),
           menuList: (base) => ({ ...base, padding: 4 }),
           option: (base, state) => ({

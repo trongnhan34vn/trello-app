@@ -6,15 +6,17 @@ export const userSerivce = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     me: builder.query<SuccessResponse<User>, void>({
       query: () => buildUrl({ path: USER_ENDPOINT.ME }),
+      providesTags: ['User'],
     }),
     updateProfile: builder.mutation({
       query: (body: any) => ({
-        url: buildUrl({ path: USER_ENDPOINT.UPDATE, params: { id: body.id } }),
-        method: HttpMethod.PATCH,
+        url: buildUrl({ path: USER_ENDPOINT.UPDATE }),
+        method: HttpMethod.PUT,
         body,
       }),
+      invalidatesTags: ['User'],
     }),
   }),
 });
 
-export const { useMeQuery } = userSerivce;
+export const { useMeQuery, useUpdateProfileMutation } = userSerivce;

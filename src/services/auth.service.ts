@@ -37,7 +37,20 @@ export const authService = baseApi.injectEndpoints({
         body,
       }),
     }),
+    changePassword: builder.mutation({
+      query: (body: any) => ({
+        url: buildUrl({ path: AUTH_ENDPOINT.CHANGE_PASSWORD }),
+        method: HttpMethod.POST,
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useSignInMutation, useSignUpMutation, useResendCodeMutation, useConfirmMutation } = authService;
+export const {
+  useSignInMutation,
+  useSignUpMutation,
+  useResendCodeMutation,
+  useConfirmMutation,
+  useChangePasswordMutation,
+} = authService;

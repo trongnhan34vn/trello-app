@@ -64,8 +64,8 @@ Dropdown.Items = function Items({
       anchor={anchor}
       transition
       className={clsx(
-        'absolute z-70 mt-2 origin-top-right rounded-lg',
-        'bg-bg-secondary backdrop-blur-xl border border-white/10 p-1',
+        'absolute z-150 mt-2 origin-top-right rounded-lg',
+        'bg-bg-secondary border border-white/10 p-1',
         'text-sm text-white shadow-lg',
         'transition duration-150 ease-out',
         'data-[closed]:scale-95 data-[closed]:opacity-0',
