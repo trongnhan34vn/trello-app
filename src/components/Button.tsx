@@ -55,7 +55,7 @@ const Button = ({
     text: {
       primary: "text-primary",
       secondary: "text-blue-500",
-      disabled: "text-gray-500",
+      disabled: "text-text-muted",
       danger: "text-red-500",
     },
   };

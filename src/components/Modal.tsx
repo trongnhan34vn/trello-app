@@ -56,7 +56,7 @@ const Modal = ({ open, onClose, children, size = ModalSize.MD, hasXMark, classNa
   return (
     <Dialog
       as="div"
-      className="relative max-h-5/6 text-white z-10 focus:outline-none"
+      className="relative max-h-5/6 text-white z-100 focus:outline-none"
       onClose={handleClose}
       open={open}
     >
@@ -66,7 +66,7 @@ const Modal = ({ open, onClose, children, size = ModalSize.MD, hasXMark, classNa
         className="fixed inset-0 bg-black/20 backdrop-blur-xs transition duration-300 ease-out data-closed:opacity-0"
       />
 
-      <div className={clsx(className, 'fixed z-10 top-0 bottom-0 left-0 right-0 w-screen')}>
+      <div className={clsx(className, 'fixed z-100 top-0 bottom-0 left-0 right-0 w-screen')}>
         <div className="flex min-h-full max-h-5/6 items-center justify-center p-4">
           <DialogPanel
             transition

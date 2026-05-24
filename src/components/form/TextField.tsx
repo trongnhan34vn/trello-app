@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type ReactNode } from "react";
 import {
   Controller,
   useFormContext,
@@ -9,7 +9,7 @@ import FormErrorMessage from "./FormErrorMessage";
 import clsx from "clsx";
 
 interface IProps {
-  label?: string;
+  label?: string | ReactNode;
   placeholder?: string;
   type?: React.HTMLInputTypeAttribute;
   rules?: RegisterOptions;

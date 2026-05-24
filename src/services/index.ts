@@ -22,12 +22,13 @@ export const AUTH_ENDPOINT = {
   RESEND_CODE: '/auth/resend-code',
   CONFIRM_SIGN_UP: '/auth/confirm-sign-up',
   REFRESH_TOKEN: '/auth/refresh-token',
+  CHANGE_PASSWORD: '/auth/change-password',
 };
 
 export const USER_ENDPOINT = {
   ME: '/users/me',
   LIST: '/users',
-  UPDATE: '/users/:id',
+  UPDATE: '/users',
 };
 
 export const WORKSPACE_CATEGORY_ENDPOINT = {

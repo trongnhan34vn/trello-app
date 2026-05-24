@@ -7,15 +7,17 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import user from '../assets/user.png';
 import logo from '../assets/vite.svg';
 import CreateBoardForm from '../forms/board/CreateBoardForm';
+import ProfileModal from '../modals/user/ProfileModal';
 import { buildRouteWithId, ROUTES } from '../routes';
 import { BOARD_ENDPOINT, http } from '../services';
 import { useListImageQuery } from '../services/image.service';
+import { useMeQuery } from '../services/user.service';
 import type { Board } from '../types/board.type';
 import Button from './Button';
+import Dropdown, { DropdownMenuSize } from './Dropdown';
 import PopoverBox, { PopoverAnchor, PopoverSize } from './PopoverBox';
 import Select from './Select';
-import { useMeQuery } from '../services/user.service';
-import Dropdown, { DropdownMenuSize } from './Dropdown';
+import SideModal from './SideModal';
 
 const Header = () => {
   const { t } = useTranslation();
@@ -73,6 +75,8 @@ const Header = () => {
       return null;
     }
   };
+
+  const [isOnEditProfileModal, setOnEditProfileModal] = useState(false);
 
   return (
     <div className="p-3 flex items-center justify-between">
@@ -156,13 +160,21 @@ const Header = () => {
               </div>
             </Dropdown.Item>
             <Dropdown.Separator />
-
-            <Dropdown.Item>Profile</Dropdown.Item>
+            <Dropdown.Item onClick={() => setOnEditProfileModal(true)}>Profile</Dropdown.Item>
             <Dropdown.Separator />
             <Dropdown.Item className="text-red-500!">Sign Out</Dropdown.Item>
           </Dropdown.Items>
         </Dropdown>
       </div>
+
+      <SideModal
+        isOpen={isOnEditProfileModal}
+        onClose={() => setOnEditProfileModal(false)}
+        title="User Profile"
+        footer={<p className="text-xs text-text-muted">Phiên bản 2.4.1</p>}
+      >
+        <ProfileModal user={currentUser} />
+      </SideModal>
     </div>
   );
 };

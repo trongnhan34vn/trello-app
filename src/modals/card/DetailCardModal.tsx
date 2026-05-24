@@ -384,7 +384,7 @@ const DetailCardModal = ({ open, close, title, id }: IProps) => {
   };
 
   return (
-    <Modal className="pb-64" hasXMark size={ModalSize.LG} open={open} onClose={close}>
+    <Modal className="" hasXMark size={ModalSize.LG} open={open} onClose={close}>
       <Modal.Header className="text-lg! border-b border-border mb-4 pb-3 ">
         {card?.title || title || ''}
       </Modal.Header>

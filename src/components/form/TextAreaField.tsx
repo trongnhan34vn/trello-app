@@ -8,8 +8,9 @@ interface IProps {
   rules?: any;
   name: string;
   placeholder?: string;
+  rows?: number
 }
-const TextAreaField = ({ label, name, rules, placeholder }: IProps) => {
+const TextAreaField = ({ label, name, rules, placeholder, rows = 3 }: IProps) => {
   const { control } = useFormContext();
   return (
     <div className="mb-4">
@@ -34,7 +35,7 @@ const TextAreaField = ({ label, name, rules, placeholder }: IProps) => {
                   'block w-full resize-none rounded-lg border-none bg-white/5 px-3 py-1.5 text-sm/6 text-white',
                   'focus:not-data-focus:outline-none data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-white/25',
                 )}
-                rows={3}
+                rows={rows}
               />
               <FormErrorMessage message={error?.message || ''} />
             </>
