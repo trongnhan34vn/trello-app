@@ -23,6 +23,7 @@ export const AUTH_ENDPOINT = {
   CONFIRM_SIGN_UP: '/auth/confirm-sign-up',
   REFRESH_TOKEN: '/auth/refresh-token',
   CHANGE_PASSWORD: '/auth/change-password',
+  SIGN_OUT: '/auth/sign-out'
 };
 
 export const USER_ENDPOINT = {

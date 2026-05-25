@@ -7,6 +7,7 @@ export const userSerivce = baseApi.injectEndpoints({
     me: builder.query<SuccessResponse<User>, void>({
       query: () => buildUrl({ path: USER_ENDPOINT.ME }),
       providesTags: ['User'],
+      keepUnusedDataFor: 0,
     }),
     updateProfile: builder.mutation({
       query: (body: any) => ({

@@ -6,16 +6,22 @@ import { UpdateCardField, useUpdateCard } from '../../hooks/useUpdateCard';
 interface IProps {
   closeOnEditDescription: () => void;
   cardId: string;
-  defaultValues: any
+  defaultValues: any;
 }
 const EditDescriptionCardForm = ({ cardId, closeOnEditDescription, defaultValues }: IProps) => {
   const { onSubmit } = useUpdateCard(cardId, UpdateCardField.DESCRIPTION);
 
   return (
-    <Form defaultValues={defaultValues} onSubmit={onSubmit}>
-      <TextEditorField name="description" rules={{ required: "Enter description..." }} />
+    <Form
+      defaultValues={defaultValues}
+      onSubmit={(data: any) => {
+        closeOnEditDescription();
+        onSubmit(data);
+      }}
+    >
+      <TextEditorField name="description" rules={{ required: 'Enter description...' }} />
       <div className="flex items-center justify-end">
-        <Button>Save</Button>
+        <Button type="submit">Save</Button>
         <Button
           onClick={(e) => {
             e.stopPropagation();
