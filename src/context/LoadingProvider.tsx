@@ -33,7 +33,7 @@ export const LoadingProvider = ({
       {children}
 
       {visible && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed  inset-0 bg-black/50 flex items-center justify-center z-99999">
           <div className="flex gap-2 items-center bg-bg-card text-black px-4 py-4 rounded">
             <RotatingLines
               visible={true}
