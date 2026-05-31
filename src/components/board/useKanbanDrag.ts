@@ -36,6 +36,7 @@ export const useKanbanDrag = ({
 }: UseKanbanDragParams) => {
   const [activeId, setActiveId] = useState<string | null>(null);
   const lastCardDragRef = useRef<LastCardDrop | null>(null);
+  const originalCardsRef = useRef<Card[]>([]);
 
   const handleColumnDragOver = (draggedId: string, targetId: string) => {
     if (targetId === ListConst.DEFAULT_ID || draggedId === targetId) return;
@@ -125,18 +126,24 @@ export const useKanbanDrag = ({
     onDragList({ id: draggedId, position: newPosition });
   };
 
-  const handleCardDragEnd = (draggedId: string) => {
+  const handleCardDragEnd = async (draggedId: string) => {
     const lastDrop = lastCardDragRef.current;
     if (!lastDrop || lastDrop.draggedId !== draggedId) return;
 
-    onDragCard({
-      id: draggedId,
-      listId: lastDrop.targetListId,
-      position: lastDrop.position,
-    });
+    try {
+      await onDragCard({
+        id: draggedId,
+        listId: lastDrop.targetListId,
+        position: lastDrop.position,
+      });
+    } catch {
+      const snapshot = originalCardsRef.current;
+      cardsRef.current = snapshot;
+      setCards(snapshot);
+    }
   };
 
-  const handleDragEnd = (event: { operation?: { source?: DndEntity; target?: DndEntity } }) => {
+  const handleDragEnd = async (event: { operation?: { source?: DndEntity; target?: DndEntity } }) => {
     const { source, target } = event.operation ?? {};
     if (!source || !target) return;
 
@@ -150,7 +157,7 @@ export const useKanbanDrag = ({
     if (source.type === 'item') {
       const draggedId = String(source.id);
       if (isDefaultCardId(draggedId)) return;
-      handleCardDragEnd(draggedId);
+      await handleCardDragEnd(draggedId);
     }
   };
 
@@ -166,11 +173,12 @@ export const useKanbanDrag = ({
     const card = cardsRef.current.find((c) => c.id === draggedId);
     if (!card) return;
 
+    originalCardsRef.current = [...cardsRef.current];
     lastCardDragRef.current = buildLastCardDropFromCard(cardsRef.current, card);
   };
 
-  const handleDragEndCleanup = (event: { operation?: { source?: DndEntity; target?: DndEntity } }) => {
-    handleDragEnd(event);
+  const handleDragEndCleanup = async (event: { operation?: { source?: DndEntity; target?: DndEntity } }) => {
+    await handleDragEnd(event);
     lastCardDragRef.current = null;
     setActiveId(null);
   };

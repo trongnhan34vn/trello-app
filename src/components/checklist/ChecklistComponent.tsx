@@ -145,7 +145,10 @@ const ChecklistComponent = ({
             <Form defaultValues={defaultValues} onSubmit={handleSubmit}>
               {(methods: any) => (
                 <>
-                  <TextField name="name" />
+                  <TextField
+                    name="name"
+                    rules={{ required: "Checklist Item's name is required" }}
+                  />
                   <div className="flex justify-between">
                     <div>
                       <Button>Save</Button>

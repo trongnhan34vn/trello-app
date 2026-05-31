@@ -65,7 +65,7 @@ export const useKanbanCreateForms = ({
   };
 
   const handleSubmitCreateCard = async (data: CardCreateForm) => {
-    const listCards = getCardsInList(cards, data.listId);
+    const listCards = getCardsInList(cards, data.listId as string);
     const lastPosition = listCards.at(-1)?.position ?? null;
     const position = generateKeyBetween(lastPosition, null);
 
