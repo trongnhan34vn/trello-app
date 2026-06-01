@@ -7,7 +7,7 @@ export interface KanbanBoardProps {
   boardId: string;
   onCreateList: (payload: ListCreateForm) => Promise<List | null>;
   onCreateCard: (payload: CardCreateForm) => Promise<Card | null>;
-  onDragCard: (payload: DragUpdateCard) => void;
+  onDragCard: (payload: DragUpdateCard) => void | Promise<void>;
   onDragList: (payload: DragUpdateList) => void;
   onDeleteList: (payload: unknown) => void;
   onDeleteCard: (payload: unknown) => void;

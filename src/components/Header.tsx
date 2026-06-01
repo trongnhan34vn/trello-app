@@ -18,11 +18,14 @@ import Dropdown, { DropdownMenuSize } from './Dropdown';
 import PopoverBox, { PopoverAnchor, PopoverSize } from './PopoverBox';
 import Select from './Select';
 import SideModal from './SideModal';
+import { useSignOutMutation } from '../services/auth.service';
+import { useMutationHandler } from '../hooks/useMutationHandler';
 
 const Header = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { handle } = useMutationHandler();
 
   const { data: res, refetch } = useListImageQuery();
   const { data: meRes } = useMeQuery();
@@ -77,6 +80,13 @@ const Header = () => {
   };
 
   const [isOnEditProfileModal, setOnEditProfileModal] = useState(false);
+
+  const [signOut] = useSignOutMutation();
+  const handleSignOut = () => {
+    handle(() => signOut(), {
+      onSuccess: () => {navigate(ROUTES.SIGN_IN)}
+    })
+  };
 
   return (
     <div className="p-3 flex items-center justify-between">
@@ -162,7 +172,7 @@ const Header = () => {
             <Dropdown.Separator />
             <Dropdown.Item onClick={() => setOnEditProfileModal(true)}>Profile</Dropdown.Item>
             <Dropdown.Separator />
-            <Dropdown.Item className="text-red-500!">Sign Out</Dropdown.Item>
+            <Dropdown.Item onClick={() => handleSignOut()} className="text-red-500!">Sign Out</Dropdown.Item>
           </Dropdown.Items>
         </Dropdown>
       </div>

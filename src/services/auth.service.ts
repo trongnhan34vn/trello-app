@@ -8,6 +8,7 @@ export const authService = baseApi.injectEndpoints({
         method: HttpMethod.POST,
         body,
       }),
+      invalidatesTags: ['User'],
     }),
     signUp: builder.mutation({
       query: (body) => ({
@@ -44,6 +45,21 @@ export const authService = baseApi.injectEndpoints({
         body,
       }),
     }),
+    signOut: builder.mutation<void, void>({
+      query: () => ({
+        url: buildUrl({ path: AUTH_ENDPOINT.SIGN_OUT }),
+        method: HttpMethod.POST,
+      }),
+      invalidatesTags: ['User'],
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          dispatch(baseApi.util.resetApiState());
+        } catch {
+          // keep cache if sign-out failed
+        }
+      },
+    }),
   }),
 });
 
@@ -53,4 +69,5 @@ export const {
   useResendCodeMutation,
   useConfirmMutation,
   useChangePasswordMutation,
+  useSignOutMutation
 } = authService;
